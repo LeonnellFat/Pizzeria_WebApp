@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}  
+
+{% block body %}
+<section class="bg-gray-50 min-h-screen py-16">
+  <div class="max-w-5xl mx-auto px-6">
+    <h1 class="text-center text-5xl font-bold text-[#D62828] mb-10" style="font-family: 'Lobster', cursive;">
+      Create Your Pizza
+    </h1>
+
+    <!-- Progress bar -->
+    <div id="progressBar" class="flex justify-center items-center space-x-8 mb-12">
+      {% set steps = ['Size', 'Base', 'Cheese', 'Toppings', 'Notes'] %}
+      {% for step in steps %}
+        <div class="flex items-center">
+          <div class="flex flex-col items-center">
+            <div
+              class="step-circle w-10 h-10 rounded-full flex items-center justify-center {% if loop.first %}bg-[#D62828] text-white{% else %}bg-gray-200 text-gray-500{% endif %} font-semibold"
+              data-step="{{ loop.index }}">
+              {{ loop.index }}
+            </div>
+            <p class="text-sm mt-2 text-gray-700">{{ step }}</p>
+          </div>
+          {% if not loop.last %}
+            <div class="w-16 h-[2px] bg-gray-300 mx-2"></div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+      <div id="stepsContainer">
+
+        <!-- STEP 1: SIZE -->
+        <div class="step bg-white shadow-lg rounded-2xl p-8" data-step="1">
+          <h2 class="text-2xl font-semibold text-[#D62828] mb-6">Choose Your Size</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            {% set sizes = [
+              {'label': 'Small (10\")', 'price': '$12'},
+              {'label': 'Medium (12\")', 'price': '$16'},
+              {'label': 'Large (14\")', 'price': '$20'}
+            ] %}
+            {% for size in sizes %}
+              <button type="button"
+                class="option-btn border border-gray-300 rounded-xl py-4 px-6 text-left flex justify-between items-center hover:border-[#D62828] hover:bg-red-50 transition">
+                <span class="font-medium text-gray-800">{{ size.label }}</span>
+                <span class="font-semibold text-[#D62828]">{{ size.price }}</span>
+              </button>
+            {% endfor %}
+          </div>
+          <div class="flex justify-between">
+            <button disabled class="px-6 py-2 border border-gray-300 text-gray-400 rounded-xl cursor-not-allowed">← Back</button>
+            <button type="button" class="next-btn px-6 py-2 bg-[#D62828] text-white rounded-xl hover:bg-red-700 transition">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 2: BASE -->
+        <div class="step bg-white shadow-lg rounded-2xl p-8 hidden" data-step="2">
+          <h2 class="text-2xl font-semibold text-[#D62828] mb-6">Choose Your Base</h2>
+          <div class="grid grid-cols-2 gap-4 mb-8">
+            {% for base in ['Tomato Sauce', 'White Sauce', 'BBQ Sauce', 'Pesto', 'Olive Oil'] %}
+              <button type="button" class="option-btn border border-gray-300 rounded-xl py-4 px-6 text-center hover:border-[#D62828] hover:bg-red-50 transition">{{ base }}</button>
+            {% endfor %}
+          </div>
+          <div class="flex justify-between">
+            <button type="button" class="back-btn px-6 py-2 border border-[#D62828] text-[#D62828] rounded-xl hover:bg-[#D62828] hover:text-white transition">← Back</button>
+            <button type="button" class="next-btn px-6 py-2 bg-[#D62828] text-white rounded-xl hover:bg-red-700 transition">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: CHEESE -->
+        <div class="step bg-white shadow-lg rounded-2xl p-8 hidden" data-step="3">
+          <h2 class="text-2xl font-semibold text-[#D62828] mb-6">Choose Your Cheese</h2>
+          <div class="grid grid-cols-2 gap-4 mb-8">
+            {% for cheese in ['Mozzarella', 'Cheddar', 'Parmesan', 'Provolone', 'Vegan Cheese', 'No Cheese'] %}
+              <button type="button" class="option-btn border border-gray-300 rounded-xl py-4 px-6 text-center hover:border-[#D62828] hover:bg-red-50 transition">{{ cheese }}</button>
+            {% endfor %}
+          </div>
+          <div class="flex justify-between">
+            <button type="button" class="back-btn px-6 py-2 border border-[#D62828] text-[#D62828] rounded-xl hover:bg-[#D62828] hover:text-white transition">← Back</button>
+            <button type="button" class="next-btn px-6 py-2 bg-[#D62828] text-white rounded-xl hover:bg-red-700 transition">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 4: TOPPINGS -->
+        <div class="step bg-white shadow-lg rounded-2xl p-8 hidden" data-step="4">
+          <h2 class="text-2xl font-semibold text-[#D62828] mb-6">Choose Your Toppings</h2>
+          <div class="grid grid-cols-2 gap-4 mb-8">
+            {% for topping in ['Pepperoni', 'Ham', 'Grilled Chicken', 'Mushrooms', 'Onions', 'Bell Peppers', 'Olives', 'Bacon'] %}
+              <button type="button" class="option-btn border border-gray-300 rounded-xl py-4 px-6 text-center hover:border-[#D62828] hover:bg-red-50 transition">{{ topping }}</button>
+            {% endfor %}
+          </div>
+          <div class="flex justify-between">
+            <button type="button" class="back-btn px-6 py-2 border border-[#D62828] text-[#D62828] rounded-xl hover:bg-[#D62828] hover:text-white transition">← Back</button>
+            <button type="button" class="next-btn px-6 py-2 bg-[#D62828] text-white rounded-xl hover:bg-red-700 transition">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 5: NOTES -->
+        <div class="step bg-white shadow-lg rounded-2xl p-8 hidden" data-step="5">
+          <h2 class="text-2xl font-semibold text-[#D62828] mb-6">Order Summary & Notes</h2>
+          <textarea class="w-full border border-gray-300 rounded-xl p-4 mb-6" rows="3" placeholder="Any special requests..."></textarea>
+          <div class="flex justify-between">
+            <button type="button" class="back-btn px-6 py-2 border border-[#D62828] text-[#D62828] rounded-xl hover:bg-[#D62828] hover:text-white transition">← Back</button>
+            <button type="button" id="finalSubmitBtn" class="px-6 py-2 bg-[#D62828] text-white rounded-xl hover:bg-red-700 transition">Add to Cart</button>
+          </div>
+        </div>
+
+      </div>
+    </form> 
+  </div>
+</section>
+{% endblock %}
+

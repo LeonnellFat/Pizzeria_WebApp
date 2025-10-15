@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Pizza{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-50 flex items-center justify-center py-10">
+  <div class="bg-white shadow-lg rounded-xl w-full max-w-lg p-8">
+    <h1 class="text-3xl font-bold text-[#D62828] mb-4">Edit Pizza</h1>
+    <p class="text-gray-500 mb-6">Update this pizza's details.</p>
+
+    {{ form_start(form) }}
+      <div class="space-y-4">
+        <div>
+          {{ form_label(form.name, 'Pizza Name', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+          {{ form_widget(form.name, {'attr': {'class': 'w-full border-gray-300 rounded-md'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.description, 'Description', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+          {{ form_widget(form.description, {'attr': {'class': 'w-full border-gray-300 rounded-md'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.price, 'Price (₱)', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+          {{ form_widget(form.price, {'attr': {'class': 'w-full border-gray-300 rounded-md'}}) }}
+        </div>
+
+        <div class="flex items-center gap-2">
+          {{ form_widget(form.isAvailable, {'attr': {'class': 'h-5 w-5 text-[#D62828]'}}) }}
+          {{ form_label(form.isAvailable, 'Available', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
+        </div>
+
+        <div>   
+          {{ form_label(form.image, 'Image Filename', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+          {{ form_widget(form.image, {'attr': {'class': 'w-full border-gray-300 rounded-md'}}) }}
+        </div>
+
+        <div class="flex justify-end gap-3 mt-6">
+          <a href="{{ path('app_pizza_admin_index') }}" 
+             class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100">Cancel</a>
+          <button class="px-4 py-2 bg-[#D62828] text-white rounded-md hover:bg-red-600">Update Pizza</button>
+        </div>
+      </div>
+    {{ form_end(form) }}
+  </div>
+</div>
+{% endblock %}

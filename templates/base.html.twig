@@ -1,18 +1,39 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Lee's Pizzeria{% endblock %}</title>
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
+    <!-- ✅ Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- ✅ Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body class="bg-white">
+    <!-- ✅ Navbar -->
+    <nav class="bg-[#D62828] px-16 py-5 flex justify-between items-center">
+        <h1 class="text-white text-3xl" style="font-family: 'Lobster', cursive;">Lee's</h1>
+        <div class="flex space-x-10">
+            <a href="{{ path('app_home') }}" class="text-white font-bold text-base hover:underline">Home</a>
+            <a href="{{ path('app_pizzas') }}" class="text-white font-bold text-base hover:underline">Pizzas</a>
+            <a href="{{ path('app_create') }}" class="text-white font-bold text-base hover:underline">Create</a>
+            <a href="{{ path('app_contact') }}" class="text-white font-bold text-base hover:underline">Contact</a>
+        </div>
+    </nav>
+
+    <!-- ✅ Body content will appear here -->
+    <main>
         {% block body %}{% endblock %}
-    </body>
+    </main>
+
+    <!-- ✅ Footer -->
+    <footer class="bg-[#100303] text-white text-center py-6 mt-12">
+        <p style="font-family: 'Roboto', sans-serif;">© 2025 Lee’s Pizzeria — Fresh from the brick oven, straight to your heart 🍕</p>
+    </footer>
+</body>
 </html>

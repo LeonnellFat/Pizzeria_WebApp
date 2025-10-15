@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard - Pizzas{% endblock %}
+
+{% block body %}
+<section class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <div class="bg-[#D62828] text-white py-10 px-8">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div>
+        <h1 class="text-4xl font-bold mb-2">Admin Dashboard</h1>
+        <p class="text-lg text-white/90">Manage your pizza menu</p>
+      </div>
+      <a href="{{ path('app_pizza_admin_new') }}" 
+         class="inline-flex items-center gap-2 bg-white text-[#D62828] font-semibold px-4 py-2 rounded-lg shadow hover:bg-red-100 transition">
+        <span class="text-xl font-bold">+</span> Add New Pizza
+      </a>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="max-w-7xl mx-auto mt-8 px-6">
+    <div class="bg-white shadow-md rounded-xl overflow-hidden">
+      <table class="min-w-full border-collapse">
+        <thead class="bg-gray-100 text-gray-700 uppercase text-sm font-semibold">
+          <tr>
+            <th class="py-4 px-6 text-left">Image</th>
+            <th class="py-4 px-6 text-left">Name</th>
+            <th class="py-4 px-6 text-left">Description</th>
+            <th class="py-4 px-6 text-left">Price</th>
+            <th class="py-4 px-6 text-left">Available</th>
+            <th class="py-4 px-6 text-right">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-200">
+          {% for pizza in pizzas %}
+            <tr class="hover:bg-gray-50 transition">
+              <td class="py-4 px-6">
+                {% if pizza.image %}
+                  <img src="{{ asset('assets/' ~ pizza.image) }}" alt="{{ pizza.name }}" class="w-16 h-16 rounded-lg object-cover">
+                {% else %}
+                  <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 text-sm">No Image</div>
+                {% endif %}
+              </td>
+              <td class="py-4 px-6 font-semibold text-gray-800">{{ pizza.name }}</td>
+              <td class="py-4 px-6 text-gray-600">{{ pizza.description }}</td>
+              <td class="py-4 px-6 font-medium text-gray-800">₱{{ pizza.price }}</td>
+              <td class="py-4 px-6">
+                {% if pizza.isAvailable %}
+                  <span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">Available</span>
+                {% else %}
+                  <span class="bg-red-100 text-red-800 text-sm font-semibold px-3 py-1 rounded-full">Unavailable</span>
+                {% endif %}
+              </td>
+              <td class="py-4 px-6 text-right flex gap-2 justify-end">
+                <a href="{{ path('app_pizza_admin_edit', {'id': pizza.id}) }}"
+                   class="p-2 rounded-md border border-gray-300 hover:bg-gray-100 text-gray-700 transition"
+                   title="Edit Pizza">
+                   ✏️
+                </a>
+                {{ include('pizza_admin/_delete_form.html.twig') }}
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="6" class="py-6 text-center text-gray-500">No pizzas found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}
