@@ -17,10 +17,27 @@
           {% else %}
             <div class="bg-gray-200 h-56 flex items-center justify-center text-gray-400 text-sm">No Image</div>
           {% endif %}
-          <div class="p-4">
-            <h3 class="text-lg font-semibold text-gray-800">{{ pizza.name }}</h3>
-            <p class="text-gray-600 mt-2">{{ pizza.description }}</p>
-            <p class="text-[#D62828] font-bold mt-3">₱{{ pizza.price }}</p>
+          
+          <div class="p-5">
+            <!-- Pizza Name -->
+            <h3 class="text-xl font-bold text-gray-800">{{ pizza.name }}</h3>
+            
+            <!-- Category Tag (rounded rectangle) -->
+            {% if pizza.category %}
+              <span class="inline-block bg-[#D62828]/10 text-[#D62828] text-sm font-semibold px-3 py-1 rounded-full mt-2">
+                {{ pizza.category.name }}
+              </span>
+            {% else %}
+              <span class="inline-block bg-gray-200 text-gray-500 text-sm font-semibold px-3 py-1 rounded-full mt-2">
+                Uncategorized
+              </span>
+            {% endif %}
+            
+            <!-- Description -->
+            <p class="text-gray-600 mt-3 text-sm">{{ pizza.description }}</p>
+            
+            <!-- Price -->
+            <p class="text-[#D62828] font-bold mt-4 text-lg">₱{{ pizza.price }}</p>
           </div>
         </div>
       {% else %}

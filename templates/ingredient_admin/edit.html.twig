@@ -1,0 +1,14 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Edit Ingredient{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-50 flex items-center justify-center py-10">
+  <div class="bg-white shadow-lg rounded-xl w-full max-w-lg p-8">
+    <h1 class="text-3xl font-bold text-[#D62828] mb-4">Edit Ingredient</h1>
+    <p class="text-gray-500 mb-6">Update ingredient details below.</p>
+
+    {{ include('ingredient_admin/_form.html.twig', {'button_label': 'Update'}) }}
+  </div>
+</div>
+{% endblock %}

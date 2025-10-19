@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\PizzaRepository;
-use Doctrine\DBAL\Types\Types;
+use App\Repository\IngredientRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PizzaRepository::class)]
-class Pizza
+#[ORM\Entity(repositoryClass: IngredientRepository::class)]
+class Ingredient
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,20 +16,14 @@ class Pizza
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
+    #[ORM\Column(length: 50)]
+    private ?string $type = null;
 
     #[ORM\Column]
     private ?float $price = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $image = null;
-
     #[ORM\Column]
     private ?bool $isAvailable = null;
-
-    #[ORM\ManyToOne(inversedBy: 'pizzas')]
-    private ?Category $category = null;
 
     public function getId(): ?int
     {
@@ -49,14 +42,14 @@ class Pizza
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getType(): ?string
     {
-        return $this->description;
+        return $this->type;
     }
 
-    public function setDescription(string $description): static
+    public function setType(string $type): static
     {
-        $this->description = $description;
+        $this->type = $type;
 
         return $this;
     }
@@ -73,18 +66,6 @@ class Pizza
         return $this;
     }
 
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(?string $image): static
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
     public function isAvailable(): ?bool
     {
         return $this->isAvailable;
@@ -93,18 +74,6 @@ class Pizza
     public function setIsAvailable(bool $isAvailable): static
     {
         $this->isAvailable = $isAvailable;
-
-        return $this;
-    }
-
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?Category $category): static
-    {
-        $this->category = $category;
 
         return $this;
     }

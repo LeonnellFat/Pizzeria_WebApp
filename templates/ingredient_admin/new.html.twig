@@ -1,0 +1,14 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Add New Ingredient{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-50 flex items-center justify-center py-10">
+  <div class="bg-white shadow-lg rounded-xl w-full max-w-lg p-8">
+    <h1 class="text-3xl font-bold text-[#D62828] mb-4">Add New Ingredient</h1>
+    <p class="text-gray-500 mb-6">Create a new ingredient to be used in your pizza customization options.</p>
+
+    {{ include('ingredient_admin/_form.html.twig') }}
+  </div>
+</div>
+{% endblock %}

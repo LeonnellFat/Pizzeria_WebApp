@@ -1,0 +1,44 @@
+{{ form_start(form) }}
+  <div class="space-y-4">
+    <!-- Name -->
+    <div>
+      {{ form_label(form.name, 'Ingredient Name', {'label_attr': {'class': 'block text-sm font-semibold text-gray-700 mb-2'}}) }}
+      {{ form_widget(form.name, {'attr': {'class': 'w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-[#D62828] focus:border-[#D62828]'}}) }}
+    </div>
+
+    <!-- Type -->
+    <div>
+      {{ form_label(form.type, 'Type', {'label_attr': {'class': 'block text-sm font-semibold text-gray-700 mb-2'}}) }}
+      {{ form_widget(form.type, {'attr': {'class': 'w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-[#D62828] focus:border-[#D62828]'}}) }}
+    </div>
+
+    <!-- Price and Availability -->
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        {{ form_label(form.price, 'Price (₱)', {'label_attr': {'class': 'block text-sm font-semibold text-gray-700 mb-2'}}) }}
+        {{ form_widget(form.price, {
+        'attr': {
+            'class': 'w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-[#D62828] focus:border-[#D62828]',
+            'type': 'number',
+            'min': '0',
+            'step': '0.01',
+            'oninput': "this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..*)\\./g, '$1');"
+        }
+        }) }}
+      </div>
+
+      <div class="flex items-start gap-1 mt-8">
+        {{ form_widget(form.isAvailable, {'attr': {'class': 'h-7 w-5 text-[#D62828]'}}) }}
+        {{ form_label(form.isAvailable, 'Available', {'label_attr': {'class': 'text-sm text-gray-700 mt-1'}}) }}
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex justify-end gap-3">
+      <a href="{{ path('app_ingredient_admin_index') }}" class="px-5 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100">Cancel</a>
+      <button type="submit" class="px-5 py-2 rounded-md bg-[#D62828] text-white font-semibold hover:bg-red-700">
+        {{ button_label|default('Save') }}
+      </button>
+    </div>
+  </div>
+{{ form_end(form) }}
