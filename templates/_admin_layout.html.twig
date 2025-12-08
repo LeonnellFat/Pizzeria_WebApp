@@ -1,0 +1,57 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block body %}
+<div class="min-h-screen flex bg-gray-50">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white shadow-lg border-r">
+    <div class="p-6 border-b">
+      <h1 class="text-2xl font-bold text-[#D62828]">Admin Dashboard</h1>
+      <p class="text-gray-500 text-sm mt-1">Manage your pizzeria</p>
+    </div>
+
+    <nav class="mt-6 flex flex-col space-y-2 px-4">
+      <!-- Pizza Management -->
+      <a href="{{ path('app_pizza_admin_index') }}"
+         class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition
+                {{ app.request.attributes.get('_route') starts with 'app_pizza_admin'
+                   ? 'bg-[#D62828] text-white shadow'
+                   : 'text-gray-700 hover:bg-gray-100' }}">
+        🍕 Pizza Management
+      </a>
+
+      <!-- Category Management -->
+      <a href="{{ path('app_category_admin_index') }}"
+         class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition
+                {{ app.request.attributes.get('_route') starts with 'app_category_admin'
+                   ? 'bg-[#D62828] text-white shadow'
+                   : 'text-gray-700 hover:bg-gray-100' }}">
+        🏷️ Category Management
+      </a>
+
+      <!-- Ingredient Management -->
+      <a href="{{ path('app_ingredient_admin_index') }}"
+         class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition
+                {{ app.request.attributes.get('_route') starts with 'app_ingredient_admin'
+                   ? 'bg-[#D62828] text-white shadow'
+                   : 'text-gray-700 hover:bg-gray-100' }}">
+        🧂 Ingredient Management
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1">
+    <!-- Header -->
+    <header class="bg-[#D62828] text-white py-8 px-10 shadow">
+      <h1 class="text-4xl font-bold mb-1">{% block page_title %}{% endblock %}</h1>
+      <p class="text-white/90 text-lg">{% block page_subtitle %}{% endblock %}</p>
+    </header>
+
+    <!-- Content Section -->
+    <section class="max-w-7xl mx-auto mt-8 px-6">
+      {% block admin_content %}{% endblock %}
+    </section>
+  </main>
+</div>
+{% endblock %}

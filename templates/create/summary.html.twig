@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block title %}Custom Pizza Summary{% endblock %}
+{% block body %}
+<div class="max-w-2xl mx-auto p-8">
+  <h1 class="text-2xl font-bold text-[#D62828] mb-4">Your Custom Pizza</h1>
+  <ul class="space-y-2">
+    <li><strong>Size:</strong> {{ pizza.size }}</li>
+    <li><strong>Base:</strong> {{ pizza.base }}</li>
+    <li><strong>Cheese:</strong> {{ pizza.cheese }}</li>
+    <li><strong>Toppings:</strong> {{ pizza.toppings ? pizza.toppings|join(', ') : '—' }}</li>
+    <li><strong>Notes:</strong> {{ pizza.notes }}</li>
+    <li><strong>Total:</strong> {{ pizza.totalPrice ? '₱' ~ pizza.totalPrice : '—' }}</li>
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lee's Pizzeria{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="bg-white text-center py-28 px-8">
+    <h2 class="text-[#D62828] text-5xl md:text-6xl font-normal mb-8" style="font-family: 'Lobster', cursive;">
+        Welcome to Lee's Pizzeria
+    </h2>
+
+    <p class="text-gray-800 text-lg max-w-3xl mx-auto leading-relaxed" style="font-family: 'Roboto', sans-serif;">
+        Experience the authentic taste of Italy right in your neighborhood. 
+        At Lee's Pizzeria, we've been serving handcrafted, wood-fired pizzas made with the finest ingredients since 1985.
+    </p>
+
+    <p class="text-gray-800 text-lg max-w-3xl mx-auto leading-relaxed mt-6" style="font-family: 'Roboto', sans-serif;">
+        From our famous Margherita to innovative specialty pizzas, every bite tells a story of passion, 
+        tradition, and culinary excellence. Join us for an unforgettable dining experience 
+        where every pizza is a masterpiece.
+    </p>
+
+    <a href="{{ path('app_pizzas') }}">
+        <button class="mt-10 bg-[#D62828] hover:bg-[#b81f1f] text-white font-bold text-lg px-12 py-4 rounded-full transition duration-300" style="font-family: 'Roboto', sans-serif;">
+            View Menu
+        </button>
+    </a>
+</section>
+{% endblock %}
