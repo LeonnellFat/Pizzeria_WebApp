@@ -31,7 +31,7 @@ class OrderItem
     /**
      * @var Collection<int, OrderItemIngredient>
      */
-    #[ORM\OneToMany(targetEntity: OrderItemIngredient::class, mappedBy: 'orderItem', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: OrderItemIngredient::class, mappedBy: 'orderItem', orphanRemoval: true, cascade: ['persist'])]
     private Collection $orderItemIngredients;
 
     #[ORM\ManyToOne]
