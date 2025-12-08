@@ -1,0 +1,16 @@
+{% extends '_admin_layout.html.twig' %}
+
+{% block title %}Add New User{% endblock %}
+
+{% block page_title %}User Management{% endblock %}
+{% block page_subtitle %}Create a new admin or staff account{% endblock %}
+
+{% block admin_content %}
+<div class="flex items-center justify-center py-8">
+  <div class="bg-white shadow-lg rounded-xl w-full max-w-2xl p-8">
+    <h2 class="text-2xl font-bold text-[#D62828] mb-6">Add New User</h2>
+
+    {{ include('user_management/_form.html.twig') }}
+  </div>
+</div>
+{% endblock %}

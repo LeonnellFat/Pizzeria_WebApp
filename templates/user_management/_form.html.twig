@@ -1,0 +1,93 @@
+{% if form.vars.errors|length > 0 %}
+  <div class="mb-6 p-4 bg-red-50 border-l-4 border-[#D62828] rounded">
+    <h3 class="text-red-800 font-semibold mb-2">Please fix the following errors:</h3>
+    <ul class="list-disc list-inside space-y-1">
+      {% for error in form.vars.errors %}
+        <li class="text-red-700">{{ error.message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+{{ form_start(form) }}
+  <div class="space-y-4">
+    {# Username Field #}
+    <div>
+      {{ form_label(form.username, 'Username', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+      {{ form_widget(form.username) }}
+      {% if form.username.vars.errors|length > 0 %}
+        <div class="mt-1 text-red-600 text-sm">
+          {% for error in form.username.vars.errors %}
+            <p>{{ error.message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    {# Password Fields #}
+    <div>
+      <label class="block text-gray-700 font-medium mb-1">Password</label>
+      <div class="space-y-3">
+        {# First password field #}
+        <div>
+          {{ form_widget(form.password.first) }}
+        </div>
+        {# Second password field (confirmation) #}
+        <div>
+          {{ form_widget(form.password.second) }}
+        </div>
+      </div>
+      {# Password errors #}
+      {% if form.password.vars.errors|length > 0 %}
+        <div class="mt-2 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+          {% for error in form.password.vars.errors %}
+            <p>⚠️ {{ error.message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {# First field specific errors #}
+      {% if form.password.first.vars.errors|length > 0 %}
+        <div class="mt-2 text-red-600 text-sm">
+          {% for error in form.password.first.vars.errors %}
+            <p>{{ error.message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {# Second field specific errors #}
+      {% if form.password.second.vars.errors|length > 0 %}
+        <div class="mt-2 text-red-600 text-sm">
+          {% for error in form.password.second.vars.errors %}
+            <p>{{ error.message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    {# Roles Field #}
+    <div>
+      {{ form_label(form.roles, 'Roles', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+      {{ form_widget(form.roles) }}
+      {% if form.roles.vars.errors|length > 0 %}
+        <div class="mt-1 text-red-600 text-sm">
+          {% for error in form.roles.vars.errors %}
+            <p>{{ error.message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    {# Active Checkbox #}
+    <div class="flex items-center gap-2">
+      {{ form_widget(form.isActive) }}
+      {{ form_label(form.isActive, 'Active', {'label_attr': {'class': 'text-gray-700 font-medium cursor-pointer'}}) }}
+    </div>
+
+    {# Form Actions #}
+    <div class="flex justify-end gap-3 mt-6">
+      <a href="{{ path('app_user_management_index') }}" 
+         class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition">Cancel</a>
+      <button type="submit" class="px-4 py-2 bg-[#D62828] text-white rounded-md hover:bg-red-600 transition font-medium">{{ button_label|default('Create User') }}</button>
+    </div>
+  </div>
+{{ form_end(form) }}
+
