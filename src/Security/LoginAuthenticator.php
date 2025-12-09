@@ -46,7 +46,7 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         // For example:
-        return new RedirectResponse($this->urlGenerator->generate('app_pizza_admin_index'));
+        return new RedirectResponse($this->urlGenerator->generate('app_overview_admin'));
         //throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
 
