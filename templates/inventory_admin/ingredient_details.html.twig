@@ -1,0 +1,123 @@
+{% extends '_admin_layout.html.twig' %}
+
+{% block page_title %}Ingredient Stock Details{% endblock %}
+{% block page_subtitle %}View detailed information about ingredient inventory{% endblock %}
+
+{% block admin_content %}
+
+<div class="max-w-4xl mx-auto">
+  <!-- Back Button -->
+  <a href="{{ path('app_inventory_admin') }}"
+     class="inline-block mb-6 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition font-semibold">
+    ← Back to Inventory
+  </a>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    
+    <!-- Ingredient Information Card -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        🧂 Ingredient Information
+      </h2>
+
+      <div class="space-y-4">
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Ingredient Name</label>
+          <p class="text-xl font-bold text-gray-800 mt-2">{{ ingredientStock.ingredient.name }}</p>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Type</label>
+          <p class="text-gray-700 font-semibold mt-2">{{ ingredientStock.ingredient.type }}</p>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Unit of Measurement</label>
+          <p class="text-lg font-bold text-gray-800 mt-2">{{ ingredientStock.unit ?? 'units' }}</p>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Price per Unit</label>
+          <p class="text-xl font-bold text-[#D62828] mt-2">₱{{ ingredientStock.ingredient.price|number_format(2, '.', ',') }}</p>
+        </div>
+
+        <div class="pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Availability</label>
+          <div class="mt-2">
+            {% if ingredientStock.ingredient.isAvailable %}
+              <span class="px-4 py-2 bg-green-100 text-green-700 rounded-full font-semibold">Available</span>
+            {% else %}
+              <span class="px-4 py-2 bg-red-100 text-red-700 rounded-full font-semibold">Unavailable</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stock Information Card -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        📊 Stock Information
+      </h2>
+
+      <div class="space-y-4">
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Current Stock</label>
+          <p class="text-4xl font-bold text-blue-600 mt-2">{{ ingredientStock.quantity }} <span class="text-xl text-gray-600">{{ ingredientStock.unit ?? 'units' }}</span></p>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Reorder Level</label>
+          <p class="text-2xl font-semibold text-gray-800 mt-2">{{ ingredientStock.reorderLevel ?? 'Not Set' }}</p>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Stock Status</label>
+          <div class="mt-2">
+            {% if ingredientStock.reorderLevel and ingredientStock.quantity <= ingredientStock.reorderLevel %}
+              <span class="px-4 py-2 bg-red-100 text-red-700 rounded-full font-semibold">⚠️ Low Stock</span>
+            {% else %}
+              <span class="px-4 py-2 bg-green-100 text-green-700 rounded-full font-semibold">✓ In Stock</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Last Restocked</label>
+          <p class="text-gray-800 mt-2">
+            {% if ingredientStock.lastRestocked %}
+              {{ ingredientStock.lastRestocked|date('F d, Y - H:i A') }}
+            {% else %}
+              Never restocked
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Created At</label>
+          <p class="text-gray-800 mt-2">{{ ingredientStock.createdAt|date('F d, Y - H:i A') }}</p>
+        </div>
+
+        <div class="pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Last Updated</label>
+          <p class="text-gray-800 mt-2">
+            {% if ingredientStock.updatedAt %}
+              {{ ingredientStock.updatedAt|date('F d, Y - H:i A') }}
+            {% else %}
+              Never updated
+            {% endif %}
+          </p>
+        </div>
+      </div>
+
+      <!-- Edit Stock Button -->
+      <a href="{{ path('app_inventory_admin_ingredient_edit', {'id': ingredientStock.id}) }}"
+         class="w-full mt-6 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition font-semibold text-center">
+        ✏️ Edit Stock Quantity
+      </a>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

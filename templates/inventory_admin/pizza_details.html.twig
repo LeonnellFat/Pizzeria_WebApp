@@ -1,0 +1,123 @@
+{% extends '_admin_layout.html.twig' %}
+
+{% block page_title %}Pizza Stock Details{% endblock %}
+{% block page_subtitle %}View detailed information about pizza inventory{% endblock %}
+
+{% block admin_content %}
+
+<div class="max-w-4xl mx-auto">
+  <!-- Back Button -->
+  <a href="{{ path('app_inventory_admin') }}"
+     class="inline-block mb-6 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition font-semibold">
+    ← Back to Inventory
+  </a>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    
+    <!-- Pizza Information Card -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        🍕 Pizza Information
+      </h2>
+
+      <div class="space-y-4">
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Pizza Name</label>
+          <p class="text-xl font-bold text-gray-800 mt-2">{{ pizzaStock.pizza.name }}</p>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Description</label>
+          <p class="text-gray-700 mt-2">{{ pizzaStock.pizza.description }}</p>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Category</label>
+          <p class="text-gray-800 font-semibold mt-2">{{ pizzaStock.pizza.category.name ?? 'No Category' }}</p>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Price</label>
+          <p class="text-xl font-bold text-[#D62828] mt-2">₱{{ pizzaStock.pizza.price|number_format(2, '.', ',') }}</p>
+        </div>
+
+        <div class="pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Availability</label>
+          <div class="mt-2">
+            {% if pizzaStock.pizza.isAvailable %}
+              <span class="px-4 py-2 bg-green-100 text-green-700 rounded-full font-semibold">Available</span>
+            {% else %}
+              <span class="px-4 py-2 bg-red-100 text-red-700 rounded-full font-semibold">Unavailable</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stock Information Card -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        📊 Stock Information
+      </h2>
+
+      <div class="space-y-4">
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Current Stock</label>
+          <p class="text-4xl font-bold text-blue-600 mt-2">{{ pizzaStock.quantity }}</p>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Reorder Level</label>
+          <p class="text-2xl font-semibold text-gray-800 mt-2">{{ pizzaStock.reorderLevel ?? 'Not Set' }}</p>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Stock Status</label>
+          <div class="mt-2">
+            {% if pizzaStock.reorderLevel and pizzaStock.quantity <= pizzaStock.reorderLevel %}
+              <span class="px-4 py-2 bg-red-100 text-red-700 rounded-full font-semibold">⚠️ Low Stock</span>
+            {% else %}
+              <span class="px-4 py-2 bg-green-100 text-green-700 rounded-full font-semibold">✓ In Stock</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Last Restocked</label>
+          <p class="text-gray-800 mt-2">
+            {% if pizzaStock.lastRestocked %}
+              {{ pizzaStock.lastRestocked|date('F d, Y - H:i A') }}
+            {% else %}
+              Never restocked
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="border-b pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Created At</label>
+          <p class="text-gray-800 mt-2">{{ pizzaStock.createdAt|date('F d, Y - H:i A') }}</p>
+        </div>
+
+        <div class="pb-4">
+          <label class="text-gray-500 text-sm font-semibold">Last Updated</label>
+          <p class="text-gray-800 mt-2">
+            {% if pizzaStock.updatedAt %}
+              {{ pizzaStock.updatedAt|date('F d, Y - H:i A') }}
+            {% else %}
+              Never updated
+            {% endif %}
+          </p>
+        </div>
+      </div>
+
+      <!-- Edit Stock Button -->
+      <a href="{{ path('app_inventory_admin_pizza_edit', {'id': pizzaStock.id}) }}"
+         class="w-full mt-6 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition font-semibold text-center">
+        ✏️ Edit Stock Quantity
+      </a>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -17,8 +17,25 @@ final class IngredientAdminController extends AbstractController
     #[Route(name: 'app_ingredient_admin_index', methods: ['GET'])]
     public function index(IngredientRepository $ingredientRepository): Response
     {
+        $ingredients = $ingredientRepository->findAll();
+        
+        // Group ingredients by type
+        $ingredientsByType = [
+            'Size' => [],
+            'Base' => [],
+            'Cheese' => [],
+            'Topping' => [],
+        ];
+        
+        foreach ($ingredients as $ingredient) {
+            $type = $ingredient->getType();
+            if (isset($ingredientsByType[$type])) {
+                $ingredientsByType[$type][] = $ingredient;
+            }
+        }
+        
         return $this->render('ingredient_admin/index.html.twig', [
-            'ingredients' => $ingredientRepository->findAll(),
+            'ingredientsByType' => $ingredientsByType,
         ]);
     }
 
