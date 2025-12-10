@@ -1,0 +1,189 @@
+{% extends '_staff_layout.html.twig' %}
+
+{% block page_title %}Inventory Management{% endblock %}
+{% block page_subtitle %}Manage pizzas and ingredients stock levels{% endblock %}
+
+{% block staff_content %}
+
+<!-- Pizzas Section -->
+<div class="mb-12">
+  <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+    🍕 Pizzas Inventory
+  </h2>
+
+  {% if pizzaStocks|length > 0 %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {% for pizzaStock in pizzaStocks %}
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-gray-100">
+          <!-- Header with status indicator -->
+          <div class="bg-gradient-to-r from-red-500 to-red-600 text-white p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-lg font-bold truncate">{{ pizzaStock.pizza.name }}</h3>
+              {% if pizzaStock.reorderLevel and pizzaStock.quantity <= pizzaStock.reorderLevel %}
+                <span class="px-3 py-1 rounded-full bg-yellow-300 text-yellow-900 font-bold text-xs">⚠️ Low</span>
+              {% else %}
+                <span class="px-3 py-1 rounded-full bg-green-300 text-green-900 font-bold text-xs">✓ Good</span>
+              {% endif %}
+            </div>
+            <p class="text-red-100 text-sm">{{ pizzaStock.pizza.category.name ?? 'No Category' }}</p>
+          </div>
+
+          <!-- Content -->
+          <div class="p-4">
+            <!-- Stock Information -->
+            <div class="mb-4 space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600 font-medium">Current Stock:</span>
+                <span class="text-2xl font-bold text-blue-600">{{ pizzaStock.quantity }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600 font-medium">Reorder Level:</span>
+                <span class="text-lg font-semibold text-gray-800">{{ pizzaStock.reorderLevel ?? 'N/A' }}</span>
+              </div>
+              <hr class="border-gray-200">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600 font-medium">Last Restocked:</span>
+                <span class="text-sm text-gray-700">
+                  {% if pizzaStock.lastRestocked %}
+                    {{ pizzaStock.lastRestocked|date('M d, Y') }}
+                  {% else %}
+                    Never
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mb-4">
+              <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                {% if pizzaStock.reorderLevel > 0 %}
+                  {% set calcPercentage = (pizzaStock.quantity / pizzaStock.reorderLevel * 100) %}
+                  {% set percentage = calcPercentage > 100 ? 100 : calcPercentage %}
+                  {% if percentage <= 50 %}
+                    <div class="bg-red-500 h-full transition-all" style="width: {{ percentage }}%"></div>
+                  {% elseif percentage <= 75 %}
+                    <div class="bg-yellow-500 h-full transition-all" style="width: {{ percentage }}%"></div>
+                  {% else %}
+                    <div class="bg-green-500 h-full transition-all" style="width: {{ percentage }}%"></div>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-2">
+              <a href="{{ path('app_staff_inventory_pizza_details', {'id': pizzaStock.id}) }}"
+                 class="flex-1 text-center px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-semibold text-sm">
+                View
+              </a>
+              <a href="{{ path('app_staff_inventory_pizza_edit', {'id': pizzaStock.id}) }}"
+                 class="flex-1 text-center px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition font-semibold text-sm">
+                Edit
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-6">
+      <p class="text-blue-700 font-semibold">📭 No pizza stocks found. Create pizzas first in Pizza Management.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Ingredients Section -->
+<div class="mb-12">
+  <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+    🧂 Ingredients Inventory
+  </h2>
+
+  {% if ingredientStocks|length > 0 %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {% for ingredientStock in ingredientStocks %}
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-gray-100">
+          <!-- Header with status indicator -->
+          <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-lg font-bold truncate">{{ ingredientStock.ingredient.name }}</h3>
+              {% if ingredientStock.reorderLevel and ingredientStock.quantity <= ingredientStock.reorderLevel %}
+                <span class="px-3 py-1 rounded-full bg-yellow-300 text-yellow-900 font-bold text-xs">⚠️ Low</span>
+              {% else %}
+                <span class="px-3 py-1 rounded-full bg-green-300 text-green-900 font-bold text-xs">✓ Good</span>
+              {% endif %}
+            </div>
+            <div class="flex gap-2">
+              <span class="px-2 py-1 rounded-full bg-purple-300 text-purple-900 text-xs font-semibold">
+                {{ ingredientStock.ingredient.type }}
+              </span>
+              <span class="px-2 py-1 rounded-full bg-purple-300 text-purple-900 text-xs font-semibold">
+                {{ ingredientStock.unit ?? 'units' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="p-4">
+            <!-- Stock Information -->
+            <div class="mb-4 space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600 font-medium">Current Stock:</span>
+                <span class="text-2xl font-bold text-purple-600">{{ ingredientStock.quantity }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600 font-medium">Reorder Level:</span>
+                <span class="text-lg font-semibold text-gray-800">{{ ingredientStock.reorderLevel ?? 'N/A' }}</span>
+              </div>
+              <hr class="border-gray-200">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600 font-medium">Last Restocked:</span>
+                <span class="text-sm text-gray-700">
+                  {% if ingredientStock.lastRestocked %}
+                    {{ ingredientStock.lastRestocked|date('M d, Y') }}
+                  {% else %}
+                    Never
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mb-4">
+              <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                {% if ingredientStock.reorderLevel > 0 %}
+                  {% set calcPercentage = (ingredientStock.quantity / ingredientStock.reorderLevel * 100) %}
+                  {% set percentage = calcPercentage > 100 ? 100 : calcPercentage %}
+                  {% if percentage <= 50 %}
+                    <div class="bg-red-500 h-full transition-all" style="width: {{ percentage }}%"></div>
+                  {% elseif percentage <= 75 %}
+                    <div class="bg-yellow-500 h-full transition-all" style="width: {{ percentage }}%"></div>
+                  {% else %}
+                    <div class="bg-green-500 h-full transition-all" style="width: {{ percentage }}%"></div>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-2">
+              <a href="{{ path('app_staff_inventory_ingredient_details', {'id': ingredientStock.id}) }}"
+                 class="flex-1 text-center px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-semibold text-sm">
+                View
+              </a>
+              <a href="{{ path('app_staff_inventory_ingredient_edit', {'id': ingredientStock.id}) }}"
+                 class="flex-1 text-center px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition font-semibold text-sm">
+                Edit
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-6">
+      <p class="text-blue-700 font-semibold">📭 No ingredient stocks found. Create ingredients first in Ingredient Management.</p>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

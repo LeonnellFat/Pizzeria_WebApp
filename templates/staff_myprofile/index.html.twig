@@ -1,0 +1,107 @@
+{% extends '_staff_layout.html.twig' %}
+
+{% block title %}My Profile - Staff Dashboard{% endblock %}
+
+{% block page_title %}My Profile{% endblock %}
+{% block page_subtitle %}Manage your account information and settings{% endblock %}
+
+{% block staff_content %}
+    <!-- Alerts -->
+    {% if app.flashes %}
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="mb-6 p-4 rounded-lg {% if type == 'success' %}bg-green-100 text-green-700 border-l-4 border-green-500{% elseif type == 'error' %}bg-red-100 text-red-700 border-l-4 border-red-500{% endif %}">
+                    <strong>{{ message }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    <!-- Profile Container -->
+    <div class="flex flex-col">
+        <!-- Main Profile Section -->
+        <div class="w-full">
+            <!-- Profile Information Card -->
+            <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Profile Information</h2>
+                    <p class="text-gray-600 text-sm">Your account details and settings</p>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Username -->
+                    <div class="pb-6 border-b border-gray-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Username</p>
+                            <a href="{{ path('app_staff_myprofile_edit_username') }}" class="text-[#D62828] hover:text-red-700 font-semibold text-sm">
+                                Edit
+                            </a>
+                        </div>
+                        <p class="text-gray-800 font-semibold text-lg">{{ user.username }}</p>
+                    </div>
+
+                    <!-- Roles -->
+                    <div class="pb-6 border-b border-gray-200">
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Roles</p>
+                        <div class="flex flex-wrap gap-2">
+                            {% set uniqueRoles = [] %}
+                            {% for role in user.roles %}
+                                {% if role != 'ROLE_USER' %}
+                                    {% set uniqueRoles = uniqueRoles|merge([role]) %}
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if uniqueRoles|length > 0 %}
+                                {% for role in uniqueRoles %}
+                                    <span class="bg-[#D62828] text-white text-xs px-3 py-1 rounded-full font-semibold">
+                                        {{ role|replace({'ROLE_': ''}) }}
+                                    </span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="bg-gray-200 text-gray-700 text-xs px-3 py-1 rounded-full">
+                                    User
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Member Since -->
+                    <div class="pb-6 border-b border-gray-200">
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Member Since</p>
+                        <p class="text-gray-800 font-semibold">{{ user.createdAt|date('F d, Y') }}</p>
+                    </div>
+
+                    <!-- Account Status -->
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Account Status</p>
+                        <div>
+                            {% if user.isActive %}
+                                <span class="bg-green-100 text-green-800 text-xs px-4 py-2 rounded-full font-semibold inline-flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-green-600 rounded-full"></span> Active
+                                </span>
+                            {% else %}
+                                <span class="bg-red-100 text-red-800 text-xs px-4 py-2 rounded-full font-semibold inline-flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-red-600 rounded-full"></span> Inactive
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Change Password Card -->
+            <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Change Password</h2>
+                    <p class="text-gray-600 text-sm">Update your account password for security</p>
+                </div>
+
+                <div class="flex gap-4">
+                    <a href="{{ path('app_staff_myprofile_change_password') }}" class="bg-[#D62828] hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
+                        🔒 Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

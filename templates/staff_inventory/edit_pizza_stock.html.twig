@@ -1,9 +1,9 @@
-{% extends '_admin_layout.html.twig' %}
+{% extends '_staff_layout.html.twig' %}
 
 {% block page_title %}Edit Pizza Stock{% endblock %}
 {% block page_subtitle %}Update stock quantity for {{ pizzaStock.pizza.name }}{% endblock %}
 
-{% block admin_content %}
+{% block staff_content %}
 
 <div class="max-w-2xl mx-auto">
   <div class="bg-white rounded-lg shadow-lg p-8">
@@ -82,7 +82,7 @@
           ✓ Update Stock
         </button>
         <a 
-          href="{{ path('app_inventory_admin') }}"
+          href="{{ path('app_staff_inventory') }}"
           class="flex-1 px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition font-semibold text-center"
         >
           Cancel

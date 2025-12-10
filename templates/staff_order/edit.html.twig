@@ -1,0 +1,18 @@
+{% extends '_staff_layout.html.twig' %}
+
+{% block title %}Edit Order{% endblock %}
+
+{% block page_title %}Edit Order #{{ order.id }}{% endblock %}
+{% block page_subtitle %}Update order details{% endblock %}
+
+{% block staff_content %}
+<div class="bg-white rounded-lg shadow-lg p-8 max-w-5xl">
+  {{ include('order_admin/_form.html.twig', {'button_label': 'Update'}) }}
+
+  <a href="{{ path('app_staff_order_index') }}" class="inline-block mt-6 px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition font-medium">
+    Back to Orders
+  </a>
+
+  {{ include('order_admin/_delete_form.html.twig') }}
+</div>
+{% endblock %}

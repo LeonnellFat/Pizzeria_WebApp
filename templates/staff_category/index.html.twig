@@ -1,14 +1,14 @@
-{% extends '_admin_layout.html.twig' %}
+{% extends '_staff_layout.html.twig' %}
 
-{% block title %}Admin Dashboard - Categories{% endblock %}
+{% block title %}Staff Dashboard - Categories{% endblock %}
 
 {% block page_title %}Category Management{% endblock %}
 {% block page_subtitle %}Manage your pizza categories{% endblock %}
 
-{% block admin_content %}
+{% block staff_content %}
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-semibold text-gray-800">Categories</h2>
-        <a href="{{ path('app_category_admin_new') }}" 
+        <a href="{{ path('app_staff_category_new') }}" 
            class="inline-flex items-center gap-2 bg-[#D62828] text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-red-700 transition">
           <span class="text-xl font-bold">+</span> Add New Category
         </a>
@@ -24,21 +24,19 @@
                   {{ category.description ? category.description : 'No description available.' }}
                 </p>
 
-                <div class="space-y-3">
-                  {% if category.createdBy %}
-                    <div class="px-3 py-1 bg-blue-100 text-blue-700 rounded text-center text-sm font-medium">
-                      👤 Created by: {{ category.createdBy.username }}
+                <div class="flex justify-between items-center gap-2">
+                  {% if not category.createdBy or category.createdBy.id != app.user.id %}
+                    <div class="w-full px-3 py-1 bg-gray-200 text-gray-600 rounded text-center text-sm font-medium">
+                      🔒 Created by admin
                     </div>
-                  {% endif %}
-                  
-                  <div class="flex justify-between items-center gap-2">
-                    <a href="{{ path('app_category_admin_edit', {'id': category.id}) }}"
+                  {% else %}
+                    <a href="{{ path('app_staff_category_edit', {'id': category.id}) }}"
                        class="flex items-center justify-center gap-2 w-1/2 border border-gray-300 rounded-lg py-2 text-gray-700 hover:bg-gray-100 transition">
                       ✏️ Edit
                     </a>
 
                     <form method="post"
-                          action="{{ path('app_category_admin_delete', {'id': category.id}) }}"
+                          action="{{ path('app_staff_category_delete', {'id': category.id}) }}"
                           onsubmit="return confirm('Are you sure you want to delete this category?');"
                           class="w-1/2">
                       <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
@@ -46,7 +44,7 @@
                         🗑️ Delete
                       </button>
                     </form>
-                  </div>
+                  {% endif %}
                 </div>
               </div>
             </div>

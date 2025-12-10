@@ -1,14 +1,14 @@
-{% extends '_admin_layout.html.twig' %}
+{% extends '_staff_layout.html.twig' %}
 
-{% block title %}Admin Dashboard - Pizzas{% endblock %}
+{% block title %}Staff Dashboard - Pizzas{% endblock %}
 
 {% block page_title %}Pizza Management{% endblock %}
 {% block page_subtitle %}Manage your pizza menu items{% endblock %}
 
-{% block admin_content %}
+{% block staff_content %}
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-semibold text-gray-800">Pizzas</h2>
-        <a href="{{ path('app_pizza_admin_new') }}" 
+        <a href="{{ path('app_staff_pizza_new') }}" 
            class="inline-flex items-center gap-2 bg-[#D62828] text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-red-700 transition">
           <span class="text-xl font-bold">+</span> Add New Pizza
         </a>
@@ -43,21 +43,19 @@
                   <span class="text-[#D62828] font-bold">₱{{ pizza.price }}</span>
                 </div>
 
-                <div class="space-y-3">
-                  {% if pizza.createdBy %}
-                    <div class="px-3 py-1 bg-blue-100 text-blue-700 rounded text-center text-sm font-medium">
-                      👤 Created by: {{ pizza.createdBy.username }}
+                <div class="flex justify-between items-center gap-2">
+                  {% if not pizza.createdBy or pizza.createdBy.id != app.user.id %}
+                    <div class="w-full px-3 py-1 bg-gray-200 text-gray-600 rounded text-center text-sm font-medium">
+                      🔒 Created by admin
                     </div>
-                  {% endif %}
-                  
-                  <div class="flex justify-between items-center gap-2">
-                    <a href="{{ path('app_pizza_admin_edit', {'id': pizza.id}) }}"
+                  {% else %}
+                    <a href="{{ path('app_staff_pizza_edit', {'id': pizza.id}) }}"
                        class="flex items-center justify-center gap-2 w-1/2 border border-gray-300 rounded-lg py-2 text-gray-700 hover:bg-gray-100 transition">
                       ✏️ Edit
                     </a>
 
                     <form method="post" 
-                          action="{{ path('app_pizza_admin_delete', {'id': pizza.id}) }}" 
+                          action="{{ path('app_staff_pizza_delete', {'id': pizza.id}) }}" 
                           onsubmit="return confirm('Are you sure you want to delete this pizza?');"
                           class="w-1/2">
                       <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pizza.id) }}">
@@ -65,7 +63,7 @@
                         🗑️ Delete
                       </button>
                     </form>
-                  </div>
+                  {% endif %}
                 </div>
               </div>
             </div>

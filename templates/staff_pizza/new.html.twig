@@ -1,0 +1,62 @@
+{% extends '_staff_layout.html.twig' %}
+
+{% block title %}Add New Pizza{% endblock %}
+
+{% block page_title %}Pizza Management{% endblock %}
+{% block page_subtitle %}Create a new pizza item for your menu{% endblock %}
+
+{% block staff_content %}
+<div class="flex items-center justify-center py-8">
+  <div class="bg-white shadow-lg rounded-xl w-full max-w-2xl p-8">
+    <h2 class="text-2xl font-bold text-[#D62828] mb-6">Add New Pizza</h2>
+
+    {{ form_start(form) }}
+      <div class="space-y-4">
+        <div>
+          {{ form_label(form.name, 'Pizza Name', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+          {{ form_widget(form.name, {'attr': {'class': 'w-full border-gray-300 rounded-md'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.description, 'Description', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+          {{ form_widget(form.description, {'attr': {'class': 'w-full border-gray-300 rounded-md'}}) }}
+        </div>
+        
+        <div>
+          {{ form_label(form.category, 'Category', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+          {{ form_widget(form.category, {'attr': {'class': 'w-full border-gray-300 rounded-md'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.price, 'Price (₱)', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+          {{ form_widget(form.price, {
+            'attr': {
+              'class': 'w-full border-gray-300 rounded-md',
+              'type': 'number',
+              'min': '0',
+              'step': '0.01',
+              'oninput': "this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..*)\\./g, '$1');"
+            }
+          }) }}
+        </div>
+
+        <div class="flex items-center gap-2">
+          {{ form_widget(form.isAvailable, {'attr': {'class': 'h-5 w-5 text-[#D62828]'}}) }}
+          {{ form_label(form.isAvailable, 'Available', {'label_attr': {'class': 'text-gray-700 font-medium'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.image, 'Pizza Image', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+          {{ form_widget(form.image, {'attr': {'class': 'w-full border-gray-300 rounded-md'}}) }}
+        </div>
+
+        <div class="flex justify-end gap-3 mt-6">
+          <a href="{{ path('app_staff_pizza_index') }}" 
+             class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100">Cancel</a>
+          <button class="px-4 py-2 bg-[#D62828] text-white rounded-md hover:bg-red-600">Create Pizza</button>
+        </div>
+      </div>
+    {{ form_end(form) }}
+  </div>
+</div>
+{% endblock %}

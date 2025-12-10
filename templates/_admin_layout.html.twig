@@ -32,25 +32,40 @@
       <!-- Pizza Management -->
       <a href="{{ path('app_pizza_admin_index') }}"
          class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition {{ app.request.attributes.get('_route') starts with 'app_pizza_admin' ? 'bg-[#D62828] text-white shadow' : 'text-gray-700 hover:bg-gray-100' }}">
-        🍕 Pizza Management
+        🍕 Pizzas
       </a>
 
       <!-- Category Management -->
       <a href="{{ path('app_category_admin_index') }}"
          class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition {{ app.request.attributes.get('_route') starts with 'app_category_admin' ? 'bg-[#D62828] text-white shadow' : 'text-gray-700 hover:bg-gray-100' }}">
-        🏷️ Category Management
+        🏷️ Categories
       </a>
 
       <!-- Ingredient Management -->
       <a href="{{ path('app_ingredient_admin_index') }}"
          class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition {{ app.request.attributes.get('_route') starts with 'app_ingredient_admin' ? 'bg-[#D62828] text-white shadow' : 'text-gray-700 hover:bg-gray-100' }}">
-        🧂 Ingredient Management
+        🧂 Ingredients
       </a>
 
       <!-- User Management -->
       <a href="{{ path('app_user_management_index') }}"
          class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition {{ app.request.attributes.get('_route') starts with 'app_user_management' ? 'bg-[#D62828] text-white shadow' : 'text-gray-700 hover:bg-gray-100' }}">
         👤 Users
+      </a>
+
+      <!-- Divider -->
+      <hr class="my-4 border-gray-200">
+
+      <!-- My Profile -->
+      <a href="{{ path('app_myprofile_admin') }}"
+         class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition {{ app.request.attributes.get('_route') starts with 'app_myprofile' ? 'bg-[#D62828] text-white shadow' : 'text-gray-700 hover:bg-gray-100' }}">
+        ⚙️ My Profile
+      </a>
+
+      <!-- Logout -->
+      <a href="{{ path('app_logout') }}"
+         class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition text-gray-700 hover:bg-red-50 hover:text-[#D62828]">
+        🚪 Logout
       </a>
     </nav>
   </aside>

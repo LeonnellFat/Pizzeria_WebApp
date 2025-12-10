@@ -14,6 +14,10 @@ class Ingredient
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?User $createdBy = null;
+
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -75,6 +79,18 @@ class Ingredient
     public function setIsAvailable(bool $isAvailable): static
     {
         $this->isAvailable = $isAvailable;
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
 
         return $this;
     }
