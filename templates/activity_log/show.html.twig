@@ -1,0 +1,99 @@
+{% extends '_admin_layout.html.twig' %}
+
+{% block title %}Activity Log Details{% endblock %}
+
+{% block page_title %}Activity Log Details{% endblock %}
+{% block page_subtitle %}View detailed information about this activity{% endblock %}
+
+{% block admin_content %}
+<div class="max-w-2xl mx-auto">
+  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <!-- Header -->
+    <div class="px-6 py-4 bg-gradient-to-r from-[#D62828] to-red-700 text-white">
+      <h2 class="text-2xl font-bold">Activity Log #{{ log.id }}</h2>
+      <p class="text-red-100 mt-1">{{ log.action }} on {{ log.targetData }}</p>
+    </div>
+
+    <!-- Content -->
+    <div class="px-6 py-6 space-y-6">
+      <!-- User Information Section -->
+      <div class="border-b pb-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">User Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-600">Username</label>
+            <p class="text-gray-900 font-semibold mt-1">{{ log.username }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600">Role</label>
+            <span class="inline-block mt-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">
+              {{ log.role }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Information Section -->
+      <div class="border-b pb-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Action Details</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-600">Action Type</label>
+            {% set actionColor = 'bg-green-100 text-green-800' %}
+            {% if log.action == 'UPDATE' %}
+              {% set actionColor = 'bg-yellow-100 text-yellow-800' %}
+            {% elseif log.action == 'DELETE' %}
+              {% set actionColor = 'bg-red-100 text-red-800' %}
+            {% elseif log.action == 'LOGIN' %}
+              {% set actionColor = 'bg-blue-100 text-blue-800' %}
+            {% elseif log.action == 'LOGOUT' %}
+              {% set actionColor = 'bg-gray-100 text-gray-800' %}
+            {% endif %}
+            <span class="inline-block mt-1 px-4 py-2 rounded-lg {{ actionColor }} text-sm font-semibold">
+              {{ log.action }}
+            </span>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600">Affected Data</label>
+            <p class="text-gray-900 font-semibold mt-1 px-4 py-2 bg-gray-100 rounded-lg">{{ log.targetData }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timestamp & IP Section -->
+      <div class="border-b pb-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Technical Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-600">Date & Time</label>
+            <p class="text-gray-900 font-semibold mt-1">
+              {% if log.dateTime %}
+                {{ log.dateTime.format('Y-m-d H:i:s') }}
+              {% else %}
+                N/A
+              {% endif %}
+            </p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600">IP Address</label>
+            <code class="inline-block mt-1 px-4 py-2 bg-gray-100 rounded-lg text-sm font-mono">
+              {{ log.ipAddress ?? 'N/A' }}
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="px-6 py-4 bg-gray-50 border-t flex justify-between">
+      <a href="{{ path('app_activity_log_index') }}" 
+         class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition font-medium">
+        ← Back to Logs
+      </a>
+      <span class="text-sm text-gray-600">
+        Log ID: {{ log.id }}
+      </span>
+    </div>
+  </div>
+</div>
+{% endblock %}

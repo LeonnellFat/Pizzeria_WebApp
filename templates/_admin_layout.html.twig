@@ -17,6 +17,12 @@
         📊 Overview
       </a>
 
+      <!-- Activity Logs -->
+      <a href="{{ path('app_activity_log_index') }}"
+         class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition {{ app.request.attributes.get('_route') starts with 'app_activity_log' ? 'bg-[#D62828] text-white shadow' : 'text-gray-700 hover:bg-gray-100' }}">
+        📋 Activity Logs
+      </a>
+
       <!-- Orders Management -->
       <a href="{{ path('app_order_admin_index') }}"
          class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition {{ app.request.attributes.get('_route') starts with 'app_order_admin' ? 'bg-[#D62828] text-white shadow' : 'text-gray-700 hover:bg-gray-100' }}">
