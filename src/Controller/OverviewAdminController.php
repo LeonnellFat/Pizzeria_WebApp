@@ -11,11 +11,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class OverviewAdminController extends AbstractController
 {
     #[Route('/overview/admin', name: 'app_overview_admin')]
+    #[IsGranted('ROLE_ADMIN')]
     public function index(
         OrderRepository $orderRepo,
         PizzaRepository $pizzaRepo,

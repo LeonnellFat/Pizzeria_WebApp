@@ -11,8 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/pizza/admin')]
+#[IsGranted('ROLE_ADMIN')]
 final class PizzaAdminController extends AbstractController
 {
     #[Route(name: 'app_pizza_admin_index', methods: ['GET'])]

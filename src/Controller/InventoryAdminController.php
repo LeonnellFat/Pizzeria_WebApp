@@ -12,11 +12,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class InventoryAdminController extends AbstractController
 {
     #[Route('/inventory/admin', name: 'app_inventory_admin')]
+    #[IsGranted('ROLE_ADMIN')]
     public function index(
         PizzaStockRepository $pizzaStockRepo,
         IngredientStockRepository $ingredientStockRepo

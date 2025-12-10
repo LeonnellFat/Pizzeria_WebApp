@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/myprofile')]
-#[IsGranted('ROLE_USER')]
+#[IsGranted('ROLE_ADMIN')]
 final class MyProfileAdminController extends AbstractController
 {
     #[Route('', name: 'app_myprofile_admin', methods: ['GET'])]
