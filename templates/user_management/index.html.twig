@@ -76,21 +76,21 @@
 
   {% if users is not empty %}
     <div class="overflow-x-auto">
-      <table class="w-full">
-        <thead class="bg-gray-100 border-b border-gray-200">
+      <table id="usersTable" class="w-full display">
+        <thead>
           <tr>
-            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Username</th>
-            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Role</th>
-            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Active</th>
-            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Created</th>
-            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Actions</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Active</th>
+            <th>Created</th>
+            <th>Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200">
+        <tbody>
           {% for user in users %}
-            <tr class="hover:bg-gray-50 transition">
-              <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ user.username }}</td>
-              <td class="px-6 py-4 text-sm">
+            <tr>
+              <td>{{ user.username }}</td>
+              <td>
                 {% if 'ROLE_ADMIN' in user.roles %}
                   <span class="inline-flex items-center gap-1 bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold">
                     👑 Admin
@@ -105,7 +105,7 @@
                   </span>
                 {% endif %}
               </td>
-              <td class="px-6 py-4 text-sm">
+              <td>
                 {% if user.isActive %}
                   <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
                     ✓ Active
@@ -116,10 +116,10 @@
                   </span>
                 {% endif %}
               </td>
-              <td class="px-6 py-4 text-sm text-gray-600">
+              <td>
                 {{ user.createdAt ? user.createdAt|date('M d, Y') : 'N/A' }}
               </td>
-              <td class="px-6 py-4 text-sm">
+              <td>
                 <div class="flex gap-2">
                   <a href="{{ path('app_user_management_edit', {'id': user.id}) }}"
                      class="inline-flex items-center gap-1 text-gray-700 hover:text-gray-900 font-semibold px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
@@ -168,4 +168,31 @@
     </div>
   {% endif %}
 </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  
+  <script>
+    $(document).ready(function() {
+      $('#usersTable').DataTable({
+        responsive: true,
+        pageLength: 10,
+        lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+        dom: '<"datatable-header"<"datatable-controls"lf>>t<"datatable-footer"<"datatable-info"i><"datatable-pagination"p>>',
+        columnDefs: [
+          { targets: 4, orderable: false }
+        ],
+        language: {
+          lengthMenu: "Show _MENU_ entries",
+          search: "Search:",
+          info: "Showing _START_ to _END_ of _TOTAL_ entries",
+          paginate: {
+            previous: "Previous",
+            next: "Next"
+          }
+        }
+      });
+    });
+  </script>
 {% endblock %}

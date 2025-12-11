@@ -41,7 +41,7 @@
         <!-- Phone Number -->
         <div>
           {{ form_label(form.customerPhone, 'Phone Number', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
-          {{ form_widget(form.customerPhone) }}
+          {{ form_widget(form.customerPhone, {'attr': {'type': 'tel', 'pattern': '[0-9]*', 'inputmode': 'numeric', 'placeholder': 'Enter phone number (numbers only)', 'oninput': "this.value = this.value.replace(/[^0-9]/g, '');"}}) }}
           {% if form.customerPhone.vars.errors|length > 0 %}
             <div class="mt-1 text-red-600 text-sm">
               {% for error in form.customerPhone.vars.errors %}

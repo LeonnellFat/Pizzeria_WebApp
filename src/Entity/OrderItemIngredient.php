@@ -21,7 +21,7 @@ class OrderItemIngredient
     private ?OrderItem $orderItem = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Ingredient $ingredient = null;
 
     public function getId(): ?int

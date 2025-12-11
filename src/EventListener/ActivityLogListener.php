@@ -54,7 +54,7 @@ final class ActivityLogListener
         $log->setRole(implode(', ', $user->getRoles()));
         $log->setAction('CREATE');
         $log->setTargetData($this->getEntityName($entity));
-        $log->setDateTime(new \DateTimeImmutable());
+        $log->setDateTime(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Singapore')));
         $log->setIpAddress($this->getClientIp());
 
         $args->getObjectManager()->persist($log);
@@ -80,7 +80,7 @@ final class ActivityLogListener
         $log->setRole(implode(', ', $user->getRoles()));
         $log->setAction('UPDATE');
         $log->setTargetData($this->getEntityName($entity));
-        $log->setDateTime(new \DateTimeImmutable());
+        $log->setDateTime(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Singapore')));
         $log->setIpAddress($this->getClientIp());
 
         $args->getObjectManager()->persist($log);
@@ -106,7 +106,7 @@ final class ActivityLogListener
         $log->setRole(implode(', ', $user->getRoles()));
         $log->setAction('DELETE');
         $log->setTargetData($this->getEntityName($entity));
-        $log->setDateTime(new \DateTimeImmutable());
+        $log->setDateTime(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Singapore')));
         $log->setIpAddress($this->getClientIp());
 
         $args->getObjectManager()->persist($log);

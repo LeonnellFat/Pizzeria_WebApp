@@ -33,7 +33,7 @@ final class AuthenticationActivityListener
         $log->setRole(implode(', ', $user->getRoles()));
         $log->setAction('LOGIN');
         $log->setTargetData('User');
-        $log->setDateTime(new \DateTimeImmutable());
+        $log->setDateTime(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Singapore')));
         $log->setIpAddress($this->getClientIp());
 
         $this->entityManager->persist($log);
@@ -54,7 +54,7 @@ final class AuthenticationActivityListener
         $log->setRole(implode(', ', $user->getRoles()));
         $log->setAction('LOGOUT');
         $log->setTargetData('User');
-        $log->setDateTime(new \DateTimeImmutable());
+        $log->setDateTime(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Singapore')));
         $log->setIpAddress($this->getClientIp());
 
         $this->entityManager->persist($log);

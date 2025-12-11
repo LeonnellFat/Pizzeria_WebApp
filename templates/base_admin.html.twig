@@ -11,12 +11,337 @@
     <!-- ✅ Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
+    <!-- ✅ DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
+
     <style>
         body {
             font-family: 'Poppins', sans-serif;
         }
         .lobster {
             font-family: 'Lobster', cursive;
+        }
+
+        /* DataTables Styling - Tailwind Compatible */
+        .dataTables_wrapper {
+            padding: 0;
+        }
+
+        /* Control wrappers */
+        .dataTables_wrapper .top,
+        .dataTables_wrapper .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            padding: 1.5rem 0;
+            margin: 0;
+        }
+
+        .dataTables_wrapper .top {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .dataTables_wrapper .bottom {
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* Length Control */
+        .dataTables_length {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0;
+            order: 1;
+        }
+
+        .dataTables_length label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            color: #374151;
+            font-weight: 600;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .dataTables_length select {
+            padding: 0.625rem 0.875rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            background-color: white;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .dataTables_length select:hover {
+            border-color: #D62828;
+            box-shadow: 0 2px 4px 0 rgba(214, 40, 40, 0.1);
+        }
+
+        .dataTables_length select:focus {
+            outline: none;
+            border-color: #D62828;
+            box-shadow: 0 0 0 3px rgba(214, 40, 40, 0.1);
+        }
+
+        /* Search Control */
+        .dataTables_filter {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0;
+            margin-left: auto;
+            order: 2;
+        }
+
+        .dataTables_filter label {
+            font-size: 0.95rem;
+            color: #374151;
+            font-weight: 600;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .dataTables_filter input {
+            padding: 0.625rem 0.875rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            min-width: 250px;
+            transition: all 0.3s ease;
+            color: #374151;
+            background-color: white;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .dataTables_filter input::placeholder {
+            color: #9ca3af;
+        }
+
+        .dataTables_filter input:hover {
+            border-color: #D62828;
+            box-shadow: 0 2px 4px 0 rgba(214, 40, 40, 0.1);
+        }
+
+        .dataTables_filter input:focus {
+            outline: none;
+            border-color: #D62828;
+            box-shadow: 0 0 0 3px rgba(214, 40, 40, 0.1);
+        }
+
+        /* Info Section */
+        .dataTables_info {
+            font-size: 0.95rem;
+            color: #6b7280;
+            margin: 0;
+            order: 1;
+            font-weight: 500;
+        }
+
+        /* Pagination */
+        .dataTables_paginate {
+            order: 2;
+            margin-left: auto;
+            margin-top: 0;
+            margin: 0;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .paginate_button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 0.75rem;
+            margin: 0;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: white;
+            color: #374151;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        /* Add arrow decorations to previous/next buttons */
+        .paginate_button:contains("Previous")::before {
+            content: "« ";
+            margin-right: 0.25rem;
+        }
+
+        .paginate_button:contains("Next")::after {
+            content: " »";
+            margin-left: 0.25rem;
+        }
+
+        .paginate_button:hover:not(.disabled) {
+            background-color: #f3f4f6;
+            border-color: #D62828;
+            color: #D62828;
+            box-shadow: 0 2px 4px 0 rgba(214, 40, 40, 0.1);
+        }
+
+        .paginate_button.current {
+            background-color: #D62828;
+            color: white;
+            border-color: #D62828;
+            font-weight: 600;
+            box-shadow: 0 4px 6px 0 rgba(214, 40, 40, 0.15);
+        }
+
+        .paginate_button.current:hover {
+            background-color: #b91f1f;
+            border-color: #b91f1f;
+        }
+
+        .paginate_button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #f9fafb;
+        }
+
+        /* Table Styling */
+        #activityLogsTable, #usersTable {
+            width: 100% !important;
+        }
+
+        #activityLogsTable thead, #usersTable thead {
+            background-color: #f3f4f6;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        #activityLogsTable thead th, #usersTable thead th {
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+        }
+
+        #activityLogsTable tbody tr, #usersTable tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+            transition: background-color 0.2s;
+        }
+
+        #activityLogsTable tbody tr:hover, #usersTable tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        #activityLogsTable tbody td, #usersTable tbody td {
+            padding: 1rem 1.5rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+        }
+
+        /* Datatable Header Section */
+        .datatable-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .datatable-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Datatable Footer Section */
+        .datatable-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .datatable-info {
+            flex: 0 0 auto;
+        }
+
+        .datatable-pagination {
+            flex: 0 0 auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dataTables_wrapper .top,
+            .dataTables_wrapper .bottom {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .dataTables_length {
+                order: 1;
+                margin-bottom: 1rem;
+            }
+
+            .dataTables_filter {
+                order: 2;
+                margin-left: 0;
+                margin-bottom: 1rem;
+            }
+
+            .dataTables_filter label {
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+            .dataTables_filter input {
+                min-width: 100%;
+                width: 100%;
+            }
+
+            .dataTables_info {
+                flex: 1 1 auto;
+                margin-bottom: 1rem;
+                order: 1;
+            }
+
+            .dataTables_paginate {
+                flex: 1 1 auto;
+                margin-left: 0;
+                justify-content: center;
+                order: 2;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .dataTables_length select,
+            .dataTables_filter input {
+                font-size: 16px;
+            }
+
+            .paginate_button {
+                padding: 0.5rem 0.625rem;
+                margin: 0 0.125rem;
+                font-size: 0.875rem;
+                min-width: 40px;
+                min-height: 40px;
+            }
+
+            .dataTables_info {
+                font-size: 0.875rem;
+            }
+
+            .dataTables_filter input {
+                min-width: 100%;
+            }
         }
     </style>
 
@@ -30,10 +355,13 @@
         {% block body %}{% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600">
-        © {{ "now"|date("Y") }} Lee's Pizzeria
-    </footer>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- ✅ DataTables Core JS -->
+    <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+
+    {% block javascripts %}{% endblock %}
 
 </body>
 </html>

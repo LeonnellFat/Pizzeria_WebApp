@@ -15,7 +15,7 @@ class PizzaStock
     private ?int $id = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Pizza $pizza = null;
 
     #[ORM\Column]
