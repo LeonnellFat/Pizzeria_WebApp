@@ -47,7 +47,7 @@ final class OrderAdminController extends AbstractController
             };
         }
 
-        return $this->render('order_admin/index.html.twig', [
+        return $this->render('admin/order_admin/index.html.twig', [
             'orders' => $orders,
             'totalOrders' => $totalOrders,
             'totalRevenue' => $totalRevenue,
@@ -160,7 +160,7 @@ final class OrderAdminController extends AbstractController
                 // Verify order has at least one item
                 if ($order->getOrderItems()->isEmpty()) {
                     $this->addFlash('error', 'Order must contain at least one item.');
-                    return $this->render('order_admin/new.html.twig', $this->getPizzasAndIngredients($pizzaRepository, $ingredientRepository) + [
+                    return $this->render('admin/order_admin/new.html.twig', $this->getPizzasAndIngredients($pizzaRepository, $ingredientRepository) + [
                         'order' => $order,
                         'form' => $form,
                     ]);
@@ -179,7 +179,7 @@ final class OrderAdminController extends AbstractController
             }
         }
 
-        return $this->render('order_admin/new.html.twig', $this->getPizzasAndIngredients($pizzaRepository, $ingredientRepository) + [
+        return $this->render('admin/order_admin/new.html.twig', $this->getPizzasAndIngredients($pizzaRepository, $ingredientRepository) + [
             'order' => $order,
             'form' => $form,
         ]);
@@ -214,7 +214,7 @@ final class OrderAdminController extends AbstractController
     #[Route('/{id}', name: 'app_order_admin_show', methods: ['GET'])]
     public function show(Order $order): Response
     {
-        return $this->render('order_admin/show.html.twig', [
+        return $this->render('admin/order_admin/show.html.twig', [
             'order' => $order,
         ]);
     }
@@ -231,7 +231,7 @@ final class OrderAdminController extends AbstractController
             return $this->redirectToRoute('app_order_admin_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('order_admin/edit.html.twig', [
+        return $this->render('admin/order_admin/edit.html.twig', [
             'order' => $order,
             'form' => $form,
         ]);

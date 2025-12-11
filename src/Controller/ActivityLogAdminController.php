@@ -57,7 +57,7 @@ final class ActivityLogAdminController extends AbstractController
         // Get available actions for filter dropdown
         $availableActions = ['CREATE', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT'];
 
-        return $this->render('activity_log/index.html.twig', [
+        return $this->render('admin/activity_log/index.html.twig', [
             'logs' => $logs,
             'page' => $page,
             'totalPages' => $totalPages,
@@ -78,7 +78,7 @@ final class ActivityLogAdminController extends AbstractController
             throw $this->createNotFoundException('Activity log not found.');
         }
 
-        return $this->render('activity_log/show.html.twig', [
+        return $this->render('admin/activity_log/show.html.twig', [
             'log' => $log,
         ]);
     }

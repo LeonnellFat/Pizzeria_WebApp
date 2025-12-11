@@ -30,7 +30,7 @@ final class InventoryAdminController extends AbstractController
         // Get all ingredient stocks with their related ingredients
         $ingredientStocks = $ingredientStockRepo->findAll();
 
-        return $this->render('inventory_admin/index.html.twig', [
+        return $this->render('admin/inventory_admin/index.html.twig', [
             'pizzaStocks' => $pizzaStocks,
             'ingredientStocks' => $ingredientStocks,
         ]);
@@ -45,7 +45,7 @@ final class InventoryAdminController extends AbstractController
             throw $this->createNotFoundException('Pizza stock not found');
         }
 
-        return $this->render('inventory_admin/pizza_details.html.twig', [
+        return $this->render('admin/inventory_admin/pizza_details.html.twig', [
             'pizzaStock' => $pizzaStock,
         ]);
     }
@@ -59,7 +59,7 @@ final class InventoryAdminController extends AbstractController
             throw $this->createNotFoundException('Ingredient stock not found');
         }
 
-        return $this->render('inventory_admin/ingredient_details.html.twig', [
+        return $this->render('admin/inventory_admin/ingredient_details.html.twig', [
             'ingredientStock' => $ingredientStock,
         ]);
     }
@@ -91,7 +91,7 @@ final class InventoryAdminController extends AbstractController
             return $this->redirectToRoute('app_inventory_admin');
         }
 
-        return $this->render('inventory_admin/edit_pizza_stock.html.twig', [
+        return $this->render('admin/inventory_admin/edit_pizza_stock.html.twig', [
             'pizzaStock' => $pizzaStock,
         ]);
     }
@@ -123,7 +123,7 @@ final class InventoryAdminController extends AbstractController
             return $this->redirectToRoute('app_inventory_admin');
         }
 
-        return $this->render('inventory_admin/edit_ingredient_stock.html.twig', [
+        return $this->render('admin/inventory_admin/edit_ingredient_stock.html.twig', [
             'ingredientStock' => $ingredientStock,
         ]);
     }

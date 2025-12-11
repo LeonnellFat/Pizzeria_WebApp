@@ -20,7 +20,7 @@ final class PizzaAdminController extends AbstractController
     #[Route(name: 'app_pizza_admin_index', methods: ['GET'])]
     public function index(PizzaRepository $pizzaRepository): Response
     {
-        return $this->render('pizza_admin/index.html.twig', [
+        return $this->render('admin/pizza_admin/index.html.twig', [
             'pizzas' => $pizzaRepository->findAll(),
         ]);
     }
@@ -51,7 +51,7 @@ final class PizzaAdminController extends AbstractController
             return $this->redirectToRoute('app_pizza_admin_index');
         }
 
-        return $this->render('pizza_admin/new.html.twig', [
+        return $this->render('admin/pizza_admin/new.html.twig', [
             'pizza' => $pizza,
             'form' => $form,
         ]);
@@ -89,7 +89,7 @@ final class PizzaAdminController extends AbstractController
             return $this->redirectToRoute('app_pizza_admin_index');
         }
 
-        return $this->render('pizza_admin/edit.html.twig', [
+        return $this->render('admin/pizza_admin/edit.html.twig', [
             'pizza' => $pizza,
             'form' => $form,
         ]);

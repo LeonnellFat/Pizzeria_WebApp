@@ -19,7 +19,7 @@ final class StaffCategoryController extends AbstractController
     #[Route(name: 'app_staff_category_index', methods: ['GET'])]
     public function index(CategoryRepository $categoryRepository): Response
     {
-        return $this->render('staff_category/index.html.twig', [
+        return $this->render('staff/category/index.html.twig', [
             'categories' => $categoryRepository->findAll(),
         ]);
     }
@@ -39,7 +39,7 @@ final class StaffCategoryController extends AbstractController
             return $this->redirectToRoute('app_staff_category_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('staff_category/new.html.twig', [
+        return $this->render('staff/category/new.html.twig', [
             'category' => $category,
             'form' => $form,
         ]);
@@ -48,7 +48,7 @@ final class StaffCategoryController extends AbstractController
     #[Route('/{id}', name: 'app_staff_category_show', methods: ['GET'])]
     public function show(Category $category): Response
     {
-        return $this->render('staff_category/show.html.twig', [
+        return $this->render('staff/category/show.html.twig', [
             'category' => $category,
         ]);
     }
@@ -69,7 +69,7 @@ final class StaffCategoryController extends AbstractController
             return $this->redirectToRoute('app_staff_category_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('staff_category/edit.html.twig', [
+        return $this->render('staff/category/edit.html.twig', [
             'category' => $category,
             'form' => $form,
         ]);

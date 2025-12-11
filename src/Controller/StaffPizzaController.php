@@ -20,7 +20,7 @@ final class StaffPizzaController extends AbstractController
     #[Route(name: 'app_staff_pizza_index', methods: ['GET'])]
     public function index(PizzaRepository $pizzaRepository): Response
     {
-        return $this->render('staff_pizza/index.html.twig', [
+        return $this->render('staff/pizza/index.html.twig', [
             'pizzas' => $pizzaRepository->findAll(),
         ]);
     }
@@ -52,7 +52,7 @@ final class StaffPizzaController extends AbstractController
             return $this->redirectToRoute('app_staff_pizza_index');
         }
 
-        return $this->render('staff_pizza/new.html.twig', [
+        return $this->render('staff/pizza/new.html.twig', [
             'pizza' => $pizza,
             'form' => $form,
         ]);
@@ -94,7 +94,7 @@ final class StaffPizzaController extends AbstractController
             return $this->redirectToRoute('app_staff_pizza_index');
         }
 
-        return $this->render('staff_pizza/edit.html.twig', [
+        return $this->render('staff/pizza/edit.html.twig', [
             'pizza' => $pizza,
             'form' => $form,
         ]);

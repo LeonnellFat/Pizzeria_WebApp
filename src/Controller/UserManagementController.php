@@ -20,7 +20,7 @@ final class UserManagementController extends AbstractController
     #[Route(name: 'app_user_management_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
-        return $this->render('user_management/index.html.twig', [
+        return $this->render('admin/user_management/index.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
     }
@@ -40,7 +40,7 @@ final class UserManagementController extends AbstractController
                 // Validate password is not empty
                 if (empty($plainPassword)) {
                     $this->addFlash('error', 'Password cannot be empty.');
-                    return $this->render('user_management/new.html.twig', [
+                    return $this->render('admin/user_management/new.html.twig', [
                         'user' => $user,
                         'form' => $form,
                     ]);
@@ -64,7 +64,7 @@ final class UserManagementController extends AbstractController
             }
         }
 
-        return $this->render('user_management/new.html.twig', [
+        return $this->render('admin/user_management/new.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
@@ -73,7 +73,7 @@ final class UserManagementController extends AbstractController
     #[Route('/{id}', name: 'app_user_management_show', methods: ['GET'])]
     public function show(User $user): Response
     {
-        return $this->render('user_management/show.html.twig', [
+        return $this->render('admin/user_management/show.html.twig', [
             'user' => $user,
         ]);
     }
@@ -107,7 +107,7 @@ final class UserManagementController extends AbstractController
             }
         }
 
-        return $this->render('user_management/edit.html.twig', [
+        return $this->render('admin/user_management/edit.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);

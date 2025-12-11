@@ -31,7 +31,7 @@ final class StaffInventoryController extends AbstractController
         // Get all ingredient stocks with their related ingredients
         $ingredientStocks = $ingredientStockRepo->findAll();
 
-        return $this->render('staff_inventory/index.html.twig', [
+        return $this->render('staff/inventory/index.html.twig', [
             'pizzaStocks' => $pizzaStocks,
             'ingredientStocks' => $ingredientStocks,
         ]);
@@ -46,7 +46,7 @@ final class StaffInventoryController extends AbstractController
             throw $this->createNotFoundException('Pizza stock not found');
         }
 
-        return $this->render('staff_inventory/pizza_details.html.twig', [
+        return $this->render('staff/inventory/pizza_details.html.twig', [
             'pizzaStock' => $pizzaStock,
         ]);
     }
@@ -60,7 +60,7 @@ final class StaffInventoryController extends AbstractController
             throw $this->createNotFoundException('Ingredient stock not found');
         }
 
-        return $this->render('staff_inventory/ingredient_details.html.twig', [
+        return $this->render('staff/inventory/ingredient_details.html.twig', [
             'ingredientStock' => $ingredientStock,
         ]);
     }
@@ -92,7 +92,7 @@ final class StaffInventoryController extends AbstractController
             return $this->redirectToRoute('app_staff_inventory');
         }
 
-        return $this->render('staff_inventory/edit_pizza_stock.html.twig', [
+        return $this->render('staff/inventory/edit_pizza_stock.html.twig', [
             'pizzaStock' => $pizzaStock,
         ]);
     }
@@ -124,7 +124,7 @@ final class StaffInventoryController extends AbstractController
             return $this->redirectToRoute('app_staff_inventory');
         }
 
-        return $this->render('staff_inventory/edit_ingredient_stock.html.twig', [
+        return $this->render('staff/inventory/edit_ingredient_stock.html.twig', [
             'ingredientStock' => $ingredientStock,
         ]);
     }

@@ -56,7 +56,7 @@ final class OverviewAdminController extends AbstractController
         // Get revenue data based on filter
         $revenueData = $this->getRevenueChartData($orderRepo, $filter);
 
-        return $this->render('overview_admin/index.html.twig', [
+        return $this->render('admin/overview_admin/index.html.twig', [
             'totalOrders' => $totalOrders,
             'totalRevenue' => $totalRevenue,
             'totalPizzas' => $totalPizzas,

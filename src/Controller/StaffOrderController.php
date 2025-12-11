@@ -47,7 +47,7 @@ final class StaffOrderController extends AbstractController
             };
         }
 
-        return $this->render('staff_order/index.html.twig', [
+        return $this->render('staff/order/index.html.twig', [
             'orders' => $orders,
             'totalOrders' => $totalOrders,
             'totalRevenue' => $totalRevenue,
@@ -160,7 +160,7 @@ final class StaffOrderController extends AbstractController
                 // Verify order has at least one item
                 if ($order->getOrderItems()->isEmpty()) {
                     $this->addFlash('error', 'Order must contain at least one item.');
-                    return $this->render('staff_order/new.html.twig', $this->getPizzasAndIngredients($pizzaRepository, $ingredientRepository) + [
+                    return $this->render('staff/order/new.html.twig', $this->getPizzasAndIngredients($pizzaRepository, $ingredientRepository) + [
                         'order' => $order,
                         'form' => $form,
                     ]);
@@ -180,7 +180,7 @@ final class StaffOrderController extends AbstractController
             }
         }
 
-        return $this->render('staff_order/new.html.twig', $this->getPizzasAndIngredients($pizzaRepository, $ingredientRepository) + [
+        return $this->render('staff/order/new.html.twig', $this->getPizzasAndIngredients($pizzaRepository, $ingredientRepository) + [
             'order' => $order,
             'form' => $form,
         ]);
@@ -215,7 +215,7 @@ final class StaffOrderController extends AbstractController
     #[Route('/{id}', name: 'app_staff_order_show', methods: ['GET'])]
     public function show(Order $order): Response
     {
-        return $this->render('staff_order/show.html.twig', [
+        return $this->render('staff/order/show.html.twig', [
             'order' => $order,
         ]);
     }
@@ -238,7 +238,7 @@ final class StaffOrderController extends AbstractController
             return $this->redirectToRoute('app_staff_order_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('staff_order/edit.html.twig', [
+        return $this->render('staff/order/edit.html.twig', [
             'order' => $order,
             'form' => $form,
         ]);

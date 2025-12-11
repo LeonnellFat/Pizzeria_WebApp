@@ -27,6 +27,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
+
     #[ORM\Column]
     private ?string $password = null;
 
@@ -52,26 +53,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): static
     {
         $this->username = $username;
+
         return $this;
     }
+
 
     public function getUserIdentifier(): string
     {
         return (string) $this->username;
     }
 
+
     public function getRoles(): array
     {
         $roles = $this->roles;
+
         $roles[] = 'ROLE_USER';
+
         return array_unique($roles);
     }
+
 
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
+
         return $this;
     }
+
 
     public function getPassword(): ?string
     {
@@ -81,13 +90,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
         return $this;
     }
+
 
     public function __serialize(): array
     {
         $data = (array) $this;
         $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
+        
         return $data;
     }
 

@@ -36,7 +36,7 @@ final class StaffIngredientController extends AbstractController
             }
         }
         
-        return $this->render('staff_ingredient/index.html.twig', [
+        return $this->render('staff/ingredient/index.html.twig', [
             'ingredientsByType' => $ingredientsByType,
         ]);
     }
@@ -56,7 +56,7 @@ final class StaffIngredientController extends AbstractController
             return $this->redirectToRoute('app_staff_ingredient_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('staff_ingredient/new.html.twig', [
+        return $this->render('staff/ingredient/new.html.twig', [
             'ingredient' => $ingredient,
             'form' => $form,
         ]);
@@ -65,7 +65,7 @@ final class StaffIngredientController extends AbstractController
     #[Route('/{id}', name: 'app_staff_ingredient_show', methods: ['GET'])]
     public function show(Ingredient $ingredient): Response
     {
-        return $this->render('staff_ingredient/show.html.twig', [
+        return $this->render('staff/ingredient/show.html.twig', [
             'ingredient' => $ingredient,
         ]);
     }
@@ -86,7 +86,7 @@ final class StaffIngredientController extends AbstractController
             return $this->redirectToRoute('app_staff_ingredient_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('staff_ingredient/edit.html.twig', [
+        return $this->render('staff/ingredient/edit.html.twig', [
             'ingredient' => $ingredient,
             'form' => $form,
         ]);

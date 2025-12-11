@@ -23,7 +23,7 @@ final class StaffMyProfileController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        return $this->render('staff_myprofile/index.html.twig', [
+        return $this->render('staff/myprofile/index.html.twig', [
             'user' => $user,
         ]);
     }
@@ -49,7 +49,7 @@ final class StaffMyProfileController extends AbstractController
             }
         }
 
-        return $this->render('staff_myprofile/edit_username.html.twig', [
+        return $this->render('staff/myprofile/edit_username.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
@@ -75,7 +75,7 @@ final class StaffMyProfileController extends AbstractController
                 // Verify current password
                 if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
                     $this->addFlash('error', 'Current password is incorrect.');
-                    return $this->render('staff_myprofile/change_password.html.twig', [
+                    return $this->render('staff/myprofile/change_password.html.twig', [
                         'form' => $form,
                     ]);
                 }
@@ -94,7 +94,7 @@ final class StaffMyProfileController extends AbstractController
             }
         }
 
-        return $this->render('staff_myprofile/change_password.html.twig', [
+        return $this->render('staff/myprofile/change_password.html.twig', [
             'form' => $form,
         ]);
     }
