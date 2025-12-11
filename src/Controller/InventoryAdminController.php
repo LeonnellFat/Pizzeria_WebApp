@@ -4,23 +4,22 @@ namespace App\Controller;
 
 use App\Entity\PizzaStock;
 use App\Entity\IngredientStock;
-use App\Entity\ActivityLog;
 use App\Repository\PizzaRepository;
 use App\Repository\PizzaStockRepository;
 use App\Repository\IngredientRepository;
 use App\Repository\IngredientStockRepository;
+use App\Service\ActivityLoggerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 final class InventoryAdminController extends AbstractController
 {
     public function __construct(
-        private RequestStack $requestStack,
+        private ActivityLoggerService $activityLogger,
     ) {}
 
     #[Route('/inventory/admin', name: 'app_inventory_admin')]
@@ -106,17 +105,11 @@ final class InventoryAdminController extends AbstractController
             // Log the activity
             $user = $this->getUser();
             if ($user instanceof \App\Entity\User) {
-                $log = new ActivityLog();
-                $log->setUserId($user);
-                $log->setUsername($user->getUsername() ?? 'Unknown');
-                $log->setRole(implode(', ', $user->getRoles()));
-                $log->setAction('UPDATE_STOCK');
-                $log->setTargetData("Pizza Stock: {$pizzaStock->getPizza()->getName()} (Qty: {$oldQuantity} → {$quantity})");
-                $log->setDateTime(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Singapore')));
-                $log->setIpAddress($this->getClientIp());
-                
-                $em->persist($log);
-                $em->flush();
+                $this->activityLogger->logActivity(
+                    $user,
+                    'UPDATE_STOCK',
+                    "Pizza: {$pizzaStock->getPizza()->getName()} ID: {$pizzaStock->getId()} Quantity: {$oldQuantity} → {$quantity}"
+                );
             }
 
             $this->addFlash('success', 'Pizza stock updated successfully!');
@@ -164,17 +157,11 @@ final class InventoryAdminController extends AbstractController
             // Log the activity
             $user = $this->getUser();
             if ($user instanceof \App\Entity\User) {
-                $log = new ActivityLog();
-                $log->setUserId($user);
-                $log->setUsername($user->getUsername() ?? 'Unknown');
-                $log->setRole(implode(', ', $user->getRoles()));
-                $log->setAction('UPDATE_STOCK');
-                $log->setTargetData("Ingredient Stock: {$ingredientStock->getIngredient()->getName()} (Qty: {$oldQuantity} → {$quantity})");
-                $log->setDateTime(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Singapore')));
-                $log->setIpAddress($this->getClientIp());
-                
-                $em->persist($log);
-                $em->flush();
+                $this->activityLogger->logActivity(
+                    $user,
+                    'UPDATE_STOCK',
+                    "Entity: Ingredient Stock | Ingredient: {$ingredientStock->getIngredient()->getName()} (ID: {$ingredientStock->getId()}) | Quantity: {$oldQuantity} → {$quantity}"
+                );
             }
 
             $this->addFlash('success', 'Ingredient stock updated successfully!');
@@ -184,14 +171,5 @@ final class InventoryAdminController extends AbstractController
         return $this->render('admin/inventory_admin/edit_ingredient_stock.html.twig', [
             'ingredientStock' => $ingredientStock,
         ]);
-    }
-
-    private function getClientIp(): ?string
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        if (!$request) {
-            return null;
-        }
-        return $request->getClientIp();
     }
 }

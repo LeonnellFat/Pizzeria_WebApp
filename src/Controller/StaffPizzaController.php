@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Pizza;
+use App\Entity\User;
 use App\Form\PizzaType;
 use App\Repository\PizzaRepository;
+use App\Service\ActivityLoggerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +19,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 #[IsGranted('ROLE_STAFF')]
 final class StaffPizzaController extends AbstractController
 {
+    public function __construct(
+        private ActivityLoggerService $activityLogger,
+    ) {}
     #[Route(name: 'app_staff_pizza_index', methods: ['GET'])]
     public function index(PizzaRepository $pizzaRepository): Response
     {
@@ -48,6 +53,16 @@ final class StaffPizzaController extends AbstractController
             $pizza->setCreatedBy($this->getUser());
             $entityManager->persist($pizza);
             $entityManager->flush();
+
+            // Log the activity
+            $user = $this->getUser();
+            if ($user instanceof User) {
+                $this->activityLogger->logActivity(
+                    $user,
+                    'CREATE',
+                    "Pizza: {$pizza->getName()} (ID: {$pizza->getId()})"
+                );
+            }
 
             return $this->redirectToRoute('app_staff_pizza_index');
         }
@@ -91,6 +106,16 @@ final class StaffPizzaController extends AbstractController
 
             $entityManager->flush();
 
+            // Log the activity
+            $user = $this->getUser();
+            if ($user instanceof User) {
+                $this->activityLogger->logActivity(
+                    $user,
+                    'UPDATE',
+                    "Pizza: {$pizza->getName()} (ID: {$pizza->getId()})"
+                );
+            }
+
             return $this->redirectToRoute('app_staff_pizza_index');
         }
 
@@ -108,6 +133,16 @@ final class StaffPizzaController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('delete'.$pizza->getId(), $request->getPayload()->getString('_token'))) {
+            // Log the activity before deletion
+            $user = $this->getUser();
+            if ($user instanceof User) {
+                $this->activityLogger->logActivity(
+                    $user,
+                    'DELETE',
+                    "Pizza: {$pizza->getName()} (ID: {$pizza->getId()})"
+                );
+            }
+
             $entityManager->remove($pizza);
             $entityManager->flush();
         }

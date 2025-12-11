@@ -7,10 +7,12 @@ use App\Entity\OrderItem;
 use App\Entity\OrderItemIngredient;
 use App\Entity\Pizza;
 use App\Entity\Ingredient;
+use App\Entity\User;
 use App\Form\OrderType;
 use App\Repository\OrderRepository;
 use App\Repository\PizzaRepository;
 use App\Repository\IngredientRepository;
+use App\Service\ActivityLoggerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +24,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_STAFF')]
 final class StaffOrderController extends AbstractController
 {
+    public function __construct(
+        private ActivityLoggerService $activityLogger,
+    ) {}
     #[Route(name: 'app_staff_order_index', methods: ['GET'])]
     public function index(OrderRepository $orderRepository): Response
     {
@@ -173,6 +178,17 @@ final class StaffOrderController extends AbstractController
                 $entityManager->persist($order);
                 $entityManager->flush();
                 
+                // Log the activity
+                $user = $this->getUser();
+                if ($user instanceof User) {
+                    $itemCount = $order->getOrderItems()->count();
+                    $this->activityLogger->logActivity(
+                        $user,
+                        'CREATE',
+                        "OrderId:" . $order->getId() . "Status: " . $order->getStatus()
+                    );
+                }
+                
                 $this->addFlash('success', 'Order #' . $order->getId() . ' created successfully!');
                 return $this->redirectToRoute('app_staff_order_index', [], Response::HTTP_SEE_OTHER);
             } catch (\Exception $e) {
@@ -235,6 +251,17 @@ final class StaffOrderController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            // Log the activity
+            $user = $this->getUser();
+            if ($user instanceof User) {
+                $itemCount = $order->getOrderItems()->count();
+                $this->activityLogger->logActivity(
+                    $user,
+                    'UPDATE',
+                    "OrderId:" . $order->getId()
+                );
+            }
+
             return $this->redirectToRoute('app_staff_order_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -254,6 +281,17 @@ final class StaffOrderController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('delete'.$order->getId(), $request->getPayload()->getString('_token'))) {
+            // Log the activity before deletion
+            $user = $this->getUser();
+            if ($user instanceof User) {
+                $itemCount = $order->getOrderItems()->count();
+                $this->activityLogger->logActivity(
+                    $user,
+                    'DELETE',
+                    "OrderId:" . $order->getId()
+                );
+            }
+
             $entityManager->remove($order);
             $entityManager->flush();
             $this->addFlash('success', 'Order deleted successfully!');
@@ -270,8 +308,20 @@ final class StaffOrderController extends AbstractController
             $validStatuses = ['On Process', 'Preparing', 'Completed', 'Delivered', 'Cancelled'];
             
             if (in_array($status, $validStatuses)) {
+                $oldStatus = $order->getStatus();
                 $order->setStatus($status);
                 $entityManager->flush();
+
+                // Log the activity
+                $user = $this->getUser();
+                if ($user instanceof User) {
+                    $this->activityLogger->logActivity(
+                        $user,
+                        'UPDATE_ORDER_STATUS',
+                        "Order #" . $order->getId() . " - Status changed from " . $oldStatus . " to " . $status
+                    );
+                }
+
                 $this->addFlash('success', 'Order status updated successfully!');
             } else {
                 $this->addFlash('error', 'Invalid status provided.');

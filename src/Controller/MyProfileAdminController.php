@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\EditUsernameType;
+use App\Service\ActivityLoggerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 final class MyProfileAdminController extends AbstractController
 {
+    public function __construct(
+        private ActivityLoggerService $activityLogger,
+    ) {}
     #[Route('', name: 'app_myprofile_admin', methods: ['GET'])]
     public function index(): Response
     {
@@ -39,8 +43,16 @@ final class MyProfileAdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                $oldUsername = $user->getUsername();
                 $user->setUpdatedAt(new \DateTimeImmutable());
                 $entityManager->flush();
+
+                // Log the activity
+                $this->activityLogger->logActivity(
+                    $user,
+                    'UPDATE',
+                    "Username: '{$user->getUsername()}'"
+                );
 
                 $this->addFlash('success', 'Username updated successfully!');
                 return $this->redirectToRoute('app_myprofile_admin');
@@ -86,6 +98,13 @@ final class MyProfileAdminController extends AbstractController
                 $user->setUpdatedAt(new \DateTimeImmutable());
 
                 $entityManager->flush();
+
+                // Log the activity
+                $this->activityLogger->logActivity(
+                    $user,
+                    'UPDATE',
+                    "User: {$user->getUsername()}"
+                );
 
                 $this->addFlash('success', 'Password changed successfully!');
                 return $this->redirectToRoute('app_myprofile_admin');

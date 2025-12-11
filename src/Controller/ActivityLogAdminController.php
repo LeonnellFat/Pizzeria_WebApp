@@ -54,9 +54,6 @@ final class ActivityLogAdminController extends AbstractController
 
         $totalPages = ceil($total / $perPage);
 
-        // Get available actions for filter dropdown
-        $availableActions = ['CREATE', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT'];
-
         return $this->render('admin/activity_log/index.html.twig', [
             'logs' => $logs,
             'page' => $page,
@@ -65,7 +62,6 @@ final class ActivityLogAdminController extends AbstractController
             'filterUser' => $filterUser,
             'filterAction' => $filterAction,
             'filterDate' => $filterDate,
-            'availableActions' => $availableActions,
         ]);
     }
 

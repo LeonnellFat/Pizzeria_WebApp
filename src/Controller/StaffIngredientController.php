@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Ingredient;
+use App\Entity\User;
 use App\Form\IngredientType;
 use App\Repository\IngredientRepository;
+use App\Service\ActivityLoggerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +18,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_STAFF')]
 final class StaffIngredientController extends AbstractController
 {
+    public function __construct(
+        private ActivityLoggerService $activityLogger,
+    ) {}
     #[Route(name: 'app_staff_ingredient_index', methods: ['GET'])]
     public function index(IngredientRepository $ingredientRepository): Response
     {
@@ -53,6 +58,16 @@ final class StaffIngredientController extends AbstractController
             $entityManager->persist($ingredient);
             $entityManager->flush();
 
+            // Log the activity
+            $user = $this->getUser();
+            if ($user instanceof User) {
+                $this->activityLogger->logActivity(
+                    $user,
+                    'CREATE',
+                    "Ingredient: {$ingredient->getName()} (ID: {$ingredient->getId()})"
+                );
+            }
+
             return $this->redirectToRoute('app_staff_ingredient_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -83,6 +98,16 @@ final class StaffIngredientController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            // Log the activity
+            $user = $this->getUser();
+            if ($user instanceof User) {
+                $this->activityLogger->logActivity(
+                    $user,
+                    'UPDATE',
+                    "Ingredient: {$ingredient->getName()} (ID: {$ingredient->getId()})"
+                );
+            }
+
             return $this->redirectToRoute('app_staff_ingredient_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -100,6 +125,16 @@ final class StaffIngredientController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('delete'.$ingredient->getId(), $request->getPayload()->getString('_token'))) {
+            // Log the activity before deletion
+            $user = $this->getUser();
+            if ($user instanceof User) {
+                $this->activityLogger->logActivity(
+                    $user,
+                    'DELETE',
+                    "Ingredient: {$ingredient->getName()} (ID: {$ingredient->getId()})"
+                );
+            }
+
             $entityManager->remove($ingredient);
             $entityManager->flush();
         }

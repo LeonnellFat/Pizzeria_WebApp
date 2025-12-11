@@ -24,14 +24,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 #[AsDoctrineListener(event: Events::preRemove)]
 final class ActivityLogListener
 {
+    // Entities that have manual logging in their controllers should be excluded from automatic logging
+    // to prevent duplicate entries. Manual logging provides more detailed action descriptions.
+    // Currently excluded: Pizza, Category, Ingredient, Order (they have manual logging in:
+    // PizzaAdminController, CategoryAdminController, IngredientAdminController, OrderAdminController)
     private array $entitiesToTrack = [
-        Pizza::class,
-        Category::class,
-        Ingredient::class,
-        Order::class,
         User::class,
-        PizzaStock::class,
-        IngredientStock::class,
     ];
 
     public function __construct(

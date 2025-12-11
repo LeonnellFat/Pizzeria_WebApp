@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Service\ActivityLoggerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 final class UserManagementController extends AbstractController
 {
+    public function __construct(
+        private ActivityLoggerService $activityLogger,
+    ) {}
+
     #[Route(name: 'app_user_management_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
@@ -130,6 +135,18 @@ final class UserManagementController extends AbstractController
         if ($this->isCsrfTokenValid('deactivate'.$user->getId(), $request->getPayload()->getString('_token'))) {
             $user->setIsActive(false);
             $entityManager->flush();
+
+            // Log the activity
+            $currentUser = $this->getUser();
+            if ($currentUser instanceof User) {
+                $this->activityLogger->logActivity(
+                    $currentUser,
+                    'DEACTIVATE_USER',
+                    "User: {$user->getUsername()} ID: {$user->getId()} Status: ACTIVE to DEACTIVED"
+                );
+            }
+
+            $this->addFlash('success', 'User account deactivated successfully!');
         }
 
         return $this->redirectToRoute('app_user_management_index', [], Response::HTTP_SEE_OTHER);
@@ -141,6 +158,18 @@ final class UserManagementController extends AbstractController
         if ($this->isCsrfTokenValid('activate'.$user->getId(), $request->getPayload()->getString('_token'))) {
             $user->setIsActive(true);
             $entityManager->flush();
+
+            // Log the activity
+            $currentUser = $this->getUser();
+            if ($currentUser instanceof User) {
+                $this->activityLogger->logActivity(
+                    $currentUser,
+                    'ACTIVATE_USER',
+                    "User: {$user->getUsername()} ID: {$user->getId()} Status: DEACTIVATED to ACTIVE"
+                );
+            }
+
+            $this->addFlash('success', 'User account activated successfully!');
         }
 
         return $this->redirectToRoute('app_user_management_index', [], Response::HTTP_SEE_OTHER);

@@ -7,10 +7,12 @@ use App\Entity\OrderItem;
 use App\Entity\OrderItemIngredient;
 use App\Entity\Pizza;
 use App\Entity\Ingredient;
+use App\Entity\User;
 use App\Form\OrderType;
 use App\Repository\OrderRepository;
 use App\Repository\PizzaRepository;
 use App\Repository\IngredientRepository;
+use App\Service\ActivityLoggerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +24,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 final class OrderAdminController extends AbstractController
 {
+    public function __construct(
+        private ActivityLoggerService $activityLogger,
+    ) {}
     #[Route(name: 'app_order_admin_index', methods: ['GET'])]
     public function index(OrderRepository $orderRepository): Response
     {
@@ -172,6 +177,17 @@ final class OrderAdminController extends AbstractController
                 $entityManager->persist($order);
                 $entityManager->flush();
                 
+                // Log the activity
+                $user = $this->getUser();
+                if ($user instanceof User) {
+                    $itemCount = $order->getOrderItems()->count();
+                    $this->activityLogger->logActivity(
+                        $user,
+                        'CREATE',
+                        "OrderId:" . $order->getId()
+                    );
+                }
+                
                 $this->addFlash('success', 'Order #' . $order->getId() . ' created successfully!');
                 return $this->redirectToRoute('app_order_admin_index', [], Response::HTTP_SEE_OTHER);
             } catch (\Exception $e) {
@@ -240,6 +256,17 @@ final class OrderAdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            // Log the activity
+            $user = $this->getUser();
+            if ($user instanceof User) {
+                $itemCount = $order->getOrderItems()->count();
+                $this->activityLogger->logActivity(
+                    $user,
+                    'UPDATE',
+                    "OrderId:" . $order->getId()
+                );
+            }
+
             return $this->redirectToRoute('app_order_admin_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -282,6 +309,17 @@ final class OrderAdminController extends AbstractController
     public function delete(Request $request, Order $order, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$order->getId(), $request->getPayload()->getString('_token'))) {
+            // Log the activity before deletion
+            $user = $this->getUser();
+            if ($user instanceof User) {
+                $itemCount = $order->getOrderItems()->count();
+                $this->activityLogger->logActivity(
+                    $user,
+                    'DELETE',
+                    "OrderId: " . $order->getId()
+                );
+            }
+
             $entityManager->remove($order);
             $entityManager->flush();
             $this->addFlash('success', 'Order deleted successfully!');
@@ -294,12 +332,24 @@ final class OrderAdminController extends AbstractController
     public function updateStatus(Request $request, Order $order, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('status'.$order->getId(), $request->getPayload()->getString('_token'))) {
+            $oldStatus = $order->getStatus();
             $status = $request->getPayload()->getString('status');
             $validStatuses = ['On Process', 'Preparing', 'Completed', 'Delivered', 'Cancelled'];
             
             if (in_array($status, $validStatuses)) {
                 $order->setStatus($status);
                 $entityManager->flush();
+
+                // Log the activity
+                $user = $this->getUser();
+                if ($user instanceof User) {
+                    $this->activityLogger->logActivity(
+                        $user,
+                        'UPDATE_ORDER_STATUS',
+                        "OrderId: " . $order->getId() . " Status changed from " . $oldStatus . " to " . $status
+                    );
+                }
+
                 $this->addFlash('success', 'Order status updated successfully!');
             } else {
                 $this->addFlash('error', 'Invalid status provided.');
