@@ -24,20 +24,41 @@
         <p class="text-blue-700 font-semibold">Current Stock: <span class="text-2xl text-blue-600">{{ ingredientStock.quantity }} {{ ingredientStock.unit ?? 'units' }}</span></p>
       </div>
 
-      <!-- Quantity Input -->
-      <div>
-        <label for="quantity" class="block text-gray-700 font-semibold mb-3">New Quantity</label>
-        <input 
-          type="number" 
-          id="quantity" 
-          name="quantity" 
-          value="{{ ingredientStock.quantity }}" 
-          min="0"
-          required
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D62828] focus:border-transparent"
-          placeholder="Enter new stock quantity"
-        >
-        <p class="text-gray-500 text-sm mt-2">Enter the total quantity you want to set for this ingredient (in {{ ingredientStock.unit ?? 'units' }}).</p>
+      <!-- Quantity Input Options -->
+      <div class="space-y-6">
+        <!-- Option 1: Set Total Quantity -->
+        <div>
+          <label for="quantity" class="block text-gray-700 font-semibold mb-3">Set Total Quantity</label>
+          <input 
+            type="number" 
+            id="quantity" 
+            name="quantity" 
+            value="{{ ingredientStock.quantity }}" 
+            min="0"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D62828] focus:border-transparent"
+            placeholder="Enter total stock quantity"
+          >
+          <p class="text-gray-500 text-sm mt-2">Set the exact total quantity for this ingredient (in {{ ingredientStock.unit ?? 'units' }}).</p>
+        </div>
+
+        <div class="border-t border-gray-300 pt-6">
+          <p class="text-gray-600 font-semibold mb-3 text-center">OR</p>
+        </div>
+
+        <!-- Option 2: Add Quantity -->
+        <div>
+          <label for="addQuantity" class="block text-gray-700 font-semibold mb-3">Add Quantity</label>
+          <input 
+            type="number" 
+            id="addQuantity" 
+            name="addQuantity" 
+            value="0" 
+            min="0"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D62828] focus:border-transparent"
+            placeholder="Enter amount to add"
+          >
+          <p class="text-gray-500 text-sm mt-2">Add this amount to the current stock ({{ ingredientStock.quantity }} + your input) in {{ ingredientStock.unit ?? 'units' }}.</p>
+        </div>
       </div>
 
       <!-- Reorder Level Display -->

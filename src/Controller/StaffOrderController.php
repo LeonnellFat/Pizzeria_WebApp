@@ -25,7 +25,7 @@ final class StaffOrderController extends AbstractController
     #[Route(name: 'app_staff_order_index', methods: ['GET'])]
     public function index(OrderRepository $orderRepository): Response
     {
-        $orders = $orderRepository->findAll();
+        $orders = $orderRepository->findAllOrderedByIdDesc();
         
         // Calculate statistics
         $totalOrders = count($orders);

@@ -25,7 +25,7 @@ final class OrderAdminController extends AbstractController
     #[Route(name: 'app_order_admin_index', methods: ['GET'])]
     public function index(OrderRepository $orderRepository): Response
     {
-        $orders = $orderRepository->findAll();
+        $orders = $orderRepository->findAllOrderedByIdDesc();
         
         // Calculate statistics
         $totalOrders = count($orders);
@@ -220,8 +220,20 @@ final class OrderAdminController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_order_admin_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Order $order, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Order $order, EntityManagerInterface $entityManager, OrderRepository $orderRepository, PizzaRepository $pizzaRepository, IngredientRepository $ingredientRepository): Response
     {
+        // Refresh and eagerly load order items
+        $order = $orderRepository->createQueryBuilder('o')
+            ->leftJoin('o.orderItems', 'oi')
+            ->leftJoin('oi.pizza', 'p')
+            ->leftJoin('oi.orderItemIngredients', 'oii')
+            ->leftJoin('oii.ingredient', 'i')
+            ->addSelect('oi', 'p', 'oii', 'i')
+            ->where('o.id = :id')
+            ->setParameter('id', $order->getId())
+            ->getQuery()
+            ->getOneOrNullResult();
+
         $form = $this->createForm(OrderType::class, $order);
         $form->handleRequest($request);
 
@@ -231,8 +243,37 @@ final class OrderAdminController extends AbstractController
             return $this->redirectToRoute('app_order_admin_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('admin/order_admin/edit.html.twig', [
+        // Convert orderItems collection to array for proper JSON encoding
+        $orderItemsArray = [];
+        foreach ($order->getOrderItems() as $item) {
+            $itemData = [
+                'id' => $item->getId(),
+                'quantity' => $item->getQuantity(),
+                'isCustom' => $item->isCustom(),
+                'finalPrice' => $item->getFinalPrice(),
+                'pizza' => $item->getPizza() ? ['id' => $item->getPizza()->getId(), 'name' => $item->getPizza()->getName(), 'price' => $item->getPizza()->getPrice()] : null,
+                'orderItemIngredients' => []
+            ];
+            
+            foreach ($item->getOrderItemIngredients() as $ing) {
+                $itemData['orderItemIngredients'][] = [
+                    'id' => $ing->getId(),
+                    'quantity' => $ing->getQuantity(),
+                    'ingredient' => [
+                        'id' => $ing->getIngredient()->getId(),
+                        'name' => $ing->getIngredient()->getName(),
+                        'type' => $ing->getIngredient()->getType(),
+                        'price' => $ing->getIngredient()->getPrice()
+                    ]
+                ];
+            }
+            
+            $orderItemsArray[] = $itemData;
+        }
+
+        return $this->render('admin/order_admin/edit.html.twig', $this->getPizzasAndIngredients($pizzaRepository, $ingredientRepository) + [
             'order' => $order,
+            'orderItemsArray' => $orderItemsArray,
             'form' => $form,
         ]);
     }

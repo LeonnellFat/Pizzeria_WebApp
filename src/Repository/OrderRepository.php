@@ -31,5 +31,17 @@ class OrderRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    /**
+     * @return Order[] Returns all orders sorted by ID in descending order (latest first)
+     */
+    public function findAllOrderedByIdDesc(): array
+    {
+        return $this->createQueryBuilder('o')
+            ->orderBy('o.id', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
 

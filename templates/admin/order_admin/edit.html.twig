@@ -1,13 +1,607 @@
-{% extends 'base.html.twig' %}
+{% extends '_admin_layout.html.twig' %}
 
 {% block title %}Edit Order{% endblock %}
 
-{% block body %}
-    <h1>Edit Order</h1>
+{% block page_title %}Edit Order #{{ order.id }}{% endblock %}
+{% block page_subtitle %}Update customer and order items{% endblock %}
 
-    {{ include('order_admin/_form.html.twig', {'button_label': 'Update'}) }}
+{% block admin_content %}
+<div class="bg-white rounded-lg shadow-lg p-8 max-w-5xl">
+  {% if form.vars.errors|length > 0 %}
+    <div class="mb-6 p-4 bg-red-50 border-l-4 border-[#D62828] rounded">
+      <h3 class="text-red-800 font-semibold mb-2">Please fix the following errors:</h3>
+      <ul class="list-disc list-inside space-y-1">
+        {% for error in form.vars.errors %}
+          <li class="text-red-700">{{ error.message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
 
-    <a href="{{ path('app_order_admin_index') }}">back to list</a>
+  {{ form_start(form, {'attr': {'id': 'orderForm'}}) }}
+  <div class="space-y-8">
+    <!-- Customer Information Section -->
+    <div class="border-b pb-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Customer Information</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Customer Name -->
+        <div>
+          {{ form_label(form.customerName, 'Customer Name', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+          {{ form_widget(form.customerName) }}
+          {% if form.customerName.vars.errors|length > 0 %}
+            <div class="mt-1 text-red-600 text-sm">
+              {% for error in form.customerName.vars.errors %}
+                <p>{{ error.message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
 
-    {{ include('order_admin/_delete_form.html.twig') }}
+        <!-- Phone Number -->
+        <div>
+          {{ form_label(form.customerPhone, 'Phone Number', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+          {{ form_widget(form.customerPhone, {'attr': {'type': 'tel', 'pattern': '[0-9]*', 'inputmode': 'numeric', 'placeholder': 'Enter phone number (numbers only)', 'oninput': "this.value = this.value.replace(/[^0-9]/g, '');"}}) }}
+          {% if form.customerPhone.vars.errors|length > 0 %}
+            <div class="mt-1 text-red-600 text-sm">
+              {% for error in form.customerPhone.vars.errors %}
+                <p>{{ error.message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Address -->
+        <div>
+          {{ form_label(form.customerAddress, 'Delivery Address', {'label_attr': {'class': 'block text-gray-700 font-medium mb-1'}}) }}
+          {{ form_widget(form.customerAddress) }}
+          {% if form.customerAddress.vars.errors|length > 0 %}
+            <div class="mt-1 text-red-600 text-sm">
+              {% for error in form.customerAddress.vars.errors %}
+                <p>{{ error.message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Items Section -->
+    <div class="border-b pb-6">
+      <!-- Tabs for Pre-made vs Custom -->
+      <div class="flex gap-4 mb-6">
+        <button type="button" id="premadeTab" class="tab-btn active px-6 py-3 font-semibold rounded-lg transition border-2 bg-[#D62828] text-white border-[#D62828]" data-tab="premade">
+          Pre-made Pizzas
+        </button>
+        <button type="button" id="customTab" class="tab-btn px-6 py-3 font-semibold rounded-lg transition border-2 bg-white text-gray-700 border-gray-300" data-tab="custom">
+          Custom Pizza
+        </button>
+      </div>
+
+      <!-- Pre-made Pizzas Tab -->
+      <div id="premadeContent" class="tab-content">
+        <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Select Pizzas</h3>
+          <div id="premadePizzasList" class="space-y-3 max-h-96 overflow-y-auto">
+            <!-- Pizzas will be loaded here -->
+          </div>
+          <div class="mt-6 p-4 bg-white rounded border-2 border-gray-300">
+            <p class="text-gray-600 font-medium">Total Amount: <span id="premadeTotal" class="text-2xl font-bold text-green-600">₱0</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Custom Pizza Tab -->
+      <div id="customContent" class="tab-content hidden">
+        <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-300 space-y-6">
+          <h3 class="text-lg font-semibold text-gray-800">✨ Build Your Custom Pizza</h3>
+          <p class="text-gray-600 text-sm">Select size, base, cheese, and toppings to customize your pizza</p>
+
+          <!-- Size Selection (from ingredients type='size') -->
+          <div>
+            <label class="block text-gray-700 font-medium mb-2">Size</label>
+            <select id="customSize" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              <option value="">Select Size</option>
+            </select>
+          </div>
+
+          <!-- Base Selection (from ingredients type='base') -->
+          <div>
+            <label class="block text-gray-700 font-medium mb-2">Base</label>
+            <select id="customBase" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              <option value="">Select Base</option>
+            </select>
+          </div>
+
+          <!-- Cheese Selection (from ingredients type='cheese') -->
+          <div>
+            <label class="block text-gray-700 font-medium mb-2">Cheese</label>
+            <select id="customCheese" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              <option value="">Select Cheese</option>
+            </select>
+          </div>
+
+          <!-- Toppings -->
+          <div>
+            <label class="block text-gray-700 font-medium mb-4">Toppings</label>
+            <div id="customToppingsList" class="space-y-2">
+              <!-- Toppings will be loaded here -->
+            </div>
+          </div>
+
+          <!-- Quantity -->
+          <div>
+            <label class="block text-gray-700 font-medium mb-2">Quantity</label>
+            <input type="number" id="customQty" value="1" min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+          </div>
+
+          <!-- Add Custom Pizza Button -->
+          <button type="button" id="addCustomPizzaBtn" class="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+            Add Custom Pizza to Order
+          </button>
+
+          <!-- Custom Pizza Total -->
+          <div class="p-4 bg-white rounded border-2 border-blue-300">
+            <p class="text-gray-600 font-medium">Custom Pizza Price: <span id="customTotal" class="text-2xl font-bold text-blue-600">₱0</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="hiddenItems"></div>
+    </div>
+
+    <!-- Submit Buttons -->
+    <div class="flex justify-between gap-4">
+      <a href="{{ path('app_order_admin_index') }}" 
+         class="px-6 py-3 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition font-medium">
+        Cancel
+      </a>
+      <button type="submit" id="editOrderBtn" class="px-6 py-3 bg-[#D62828] text-white rounded-lg hover:bg-red-700 transition font-semibold">
+        Update Order
+      </button>
+    </div>
+  </div>
+  {{ form_widget(form._token) }}
+  {{ form_end(form, { 'render_rest': false }) }}
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Store all pizzas and ingredients data
+  let pizzas = {{ pizzas|raw }};
+  let ingredients = {{ ingredients|raw }};
+  let customItems = [];
+
+  // Existing order items data - convert to array if it's an object
+  let orderItemsData = {{ orderItemsArray|json_encode|raw }};
+  const existingOrderItems = Array.isArray(orderItemsData) ? orderItemsData : Object.values(orderItemsData || {});
+  
+  // Debug logging
+  console.log('Pizzas:', pizzas);
+  console.log('Existing Order Items:', existingOrderItems);
+
+  // Tab switching
+  const premadeTab = document.getElementById('premadeTab');
+  const customTab = document.getElementById('customTab');
+  const premadeContent = document.getElementById('premadeContent');
+  const customContent = document.getElementById('customContent');
+
+  premadeTab.addEventListener('click', function(e) {
+    e.preventDefault();
+    premadeTab.classList.add('active', 'bg-[#D62828]', 'text-white', 'border-[#D62828]');
+    premadeTab.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+    customTab.classList.remove('active', 'bg-[#D62828]', 'text-white', 'border-[#D62828]');
+    customTab.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+    premadeContent.classList.remove('hidden');
+    customContent.classList.add('hidden');
+  });
+
+  customTab.addEventListener('click', function(e) {
+    e.preventDefault();
+    customTab.classList.add('active', 'bg-[#D62828]', 'text-white', 'border-[#D62828]');
+    customTab.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+    premadeTab.classList.remove('active', 'bg-[#D62828]', 'text-white', 'border-[#D62828]');
+    premadeTab.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+    premadeContent.classList.add('hidden');
+    customContent.classList.remove('hidden');
+  });
+
+  // Load Pre-made Pizzas
+  function loadPremadePizzas() {
+    const premadePizzasList = document.getElementById('premadePizzasList');
+    premadePizzasList.innerHTML = '';
+    
+    console.log('Loading premade pizzas. Pizza count:', pizzas.length);
+    console.log('Existing items count:', existingOrderItems.length);
+    
+    pizzas.forEach(pizza => {
+      // Check if this pizza exists in the order
+      let existingQty = 0;
+      existingOrderItems.forEach(item => {
+        console.log('Checking item:', item);
+        console.log('Item pizza:', item.pizza);
+        console.log('Current pizza:', pizza);
+        if (!item.isCustom && item.pizza && item.pizza.id === pizza.id) {
+          console.log(`Found match: ${pizza.name} (ID: ${pizza.id}), Qty: ${item.quantity}`);
+          existingQty += item.quantity;
+        }
+      });
+
+      const pizzaDiv = document.createElement('div');
+      pizzaDiv.className = 'flex items-center justify-between p-4 bg-white rounded border border-gray-300';
+      pizzaDiv.innerHTML = `
+        <div>
+          <p class="font-semibold text-gray-900">${pizza.name}</p>
+          <p class="text-gray-600 text-sm">₱${pizza.price}</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" class="pizza-qty-decrease px-3 py-1 border border-gray-300 rounded hover:bg-gray-100" data-pizza-id="${pizza.id}">−</button>
+          <span class="pizza-qty w-8 text-center font-semibold" data-pizza-id="${pizza.id}">${existingQty}</span>
+          <button type="button" class="pizza-qty-increase px-3 py-1 border border-gray-300 rounded hover:bg-gray-100" data-pizza-id="${pizza.id}">+</button>
+        </div>
+      `;
+      premadePizzasList.appendChild(pizzaDiv);
+    });
+
+    // Attach premade quantity listeners
+    document.querySelectorAll('.pizza-qty-increase').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pizzaId = btn.dataset.pizzaId;
+        const qtySpan = document.querySelector(`.pizza-qty[data-pizza-id="${pizzaId}"]`);
+        let qty = parseInt(qtySpan.textContent);
+        qty++;
+        qtySpan.textContent = qty;
+        updatePremadeTotal();
+      });
+    });
+
+    document.querySelectorAll('.pizza-qty-decrease').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pizzaId = btn.dataset.pizzaId;
+        const qtySpan = document.querySelector(`.pizza-qty[data-pizza-id="${pizzaId}"]`);
+        let qty = parseInt(qtySpan.textContent);
+        if (qty > 0) qty--;
+        qtySpan.textContent = qty;
+        updatePremadeTotal();
+      });
+    });
+  }
+
+  // Load Custom Pizza Options
+  function loadCustomPizzaOptions() {
+    // Load Size dropdown
+    const sizeSelect = document.getElementById('customSize');
+    const sizes = ingredients.filter(ing => ing.type.toLowerCase() === 'size');
+    sizes.forEach(size => {
+      const option = document.createElement('option');
+      option.value = size.id;
+      option.textContent = `${size.name} - ₱${size.price}`;
+      option.dataset.price = size.price;
+      sizeSelect.appendChild(option);
+    });
+
+    // Load Base dropdown
+    const baseSelect = document.getElementById('customBase');
+    const bases = ingredients.filter(ing => ing.type.toLowerCase() === 'base');
+    bases.forEach(base => {
+      const option = document.createElement('option');
+      option.value = base.id;
+      option.textContent = `${base.name} - ₱${base.price}`;
+      option.dataset.price = base.price;
+      baseSelect.appendChild(option);
+    });
+
+    // Load Cheese dropdown
+    const cheeseSelect = document.getElementById('customCheese');
+    const cheeses = ingredients.filter(ing => ing.type.toLowerCase() === 'cheese');
+    cheeses.forEach(cheese => {
+      const option = document.createElement('option');
+      option.value = cheese.id;
+      option.textContent = `${cheese.name} - ₱${cheese.price}`;
+      option.dataset.price = cheese.price;
+      cheeseSelect.appendChild(option);
+    });
+
+    // Load Toppings with +/- buttons
+    const toppingsList = document.getElementById('customToppingsList');
+    toppingsList.innerHTML = '';
+    const toppings = ingredients.filter(ing => ing.type.toLowerCase() === 'topping');
+    
+    toppings.forEach(topping => {
+      const toppingDiv = document.createElement('div');
+      toppingDiv.className = 'flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200';
+      toppingDiv.innerHTML = `
+        <div>
+          <p class="font-semibold text-gray-900">${topping.name}</p>
+          <p class="text-gray-600 text-sm">₱${topping.price}</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" class="topping-qty-decrease px-3 py-1 border border-gray-300 rounded hover:bg-gray-100" data-topping-id="${topping.id}">−</button>
+          <span class="topping-qty w-8 text-center font-semibold" data-topping-id="${topping.id}">0</span>
+          <button type="button" class="topping-qty-increase px-3 py-1 border border-gray-300 rounded hover:bg-gray-100" data-topping-id="${topping.id}">+</button>
+        </div>
+      `;
+      toppingsList.appendChild(toppingDiv);
+    });
+
+    // Attach topping quantity listeners
+    document.querySelectorAll('.topping-qty-increase').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const toppingId = btn.dataset.toppingId;
+        const qtySpan = document.querySelector(`.topping-qty[data-topping-id="${toppingId}"]`);
+        let qty = parseInt(qtySpan.textContent);
+        qty++;
+        qtySpan.textContent = qty;
+        updateCustomTotal();
+      });
+    });
+
+    document.querySelectorAll('.topping-qty-decrease').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const toppingId = btn.dataset.toppingId;
+        const qtySpan = document.querySelector(`.topping-qty[data-topping-id="${toppingId}"]`);
+        let qty = parseInt(qtySpan.textContent);
+        if (qty > 0) qty--;
+        qtySpan.textContent = qty;
+        updateCustomTotal();
+      });
+    });
+
+    // Attach change listeners to dropdowns
+    document.getElementById('customSize').addEventListener('change', updateCustomTotal);
+    document.getElementById('customBase').addEventListener('change', updateCustomTotal);
+    document.getElementById('customCheese').addEventListener('change', updateCustomTotal);
+  }
+
+  // Pre-populate form fields with existing custom pizza from order
+  function loadExistingCustomItems() {
+    // Check if there are any custom items in the order
+    const customOrderItems = existingOrderItems.filter(item => item.isCustom);
+    
+    console.log('Custom order items found:', customOrderItems);
+    
+    if (customOrderItems.length > 0) {
+      // Process all custom items
+      customOrderItems.forEach((item, index) => {
+        let sizeId = null, baseId = null, cheeseId = null;
+        const toppings = [];
+        
+        // Extract ingredients from this custom item
+        if (item.orderItemIngredients && item.orderItemIngredients.length > 0) {
+          item.orderItemIngredients.forEach(ing => {
+            const ingredientType = ing.ingredient.type ? ing.ingredient.type.toLowerCase() : '';
+            
+            if (ingredientType === 'size') {
+              sizeId = ing.ingredient.id;
+            } else if (ingredientType === 'base') {
+              baseId = ing.ingredient.id;
+            } else if (ingredientType === 'cheese') {
+              cheeseId = ing.ingredient.id;
+            } else if (ingredientType === 'topping') {
+              toppings.push({
+                id: ing.ingredient.id,
+                qty: ing.quantity
+              });
+            }
+          });
+        }
+        
+        // Add to customItems array
+        customItems.push({
+          size: sizeId,
+          base: baseId,
+          cheese: cheeseId,
+          toppings: toppings,
+          price: item.finalPrice,
+          qty: item.quantity
+        });
+        
+        // Pre-fill the form with the first custom item
+        if (index === 0) {
+          console.log('Pre-filling form with first custom pizza:', customItems[0]);
+          
+          // Set Size
+          if (sizeId) {
+            document.getElementById('customSize').value = sizeId;
+            console.log('Set customSize to:', sizeId);
+          }
+          
+          // Set Base
+          if (baseId) {
+            document.getElementById('customBase').value = baseId;
+            console.log('Set customBase to:', baseId);
+          }
+          
+          // Set Cheese
+          if (cheeseId) {
+            document.getElementById('customCheese').value = cheeseId;
+            console.log('Set customCheese to:', cheeseId);
+          }
+          
+          // Set Toppings quantities
+          if (toppings && toppings.length > 0) {
+            toppings.forEach(topping => {
+              const toppingQtySpan = document.querySelector(`.topping-qty[data-topping-id="${topping.id}"]`);
+              if (toppingQtySpan) {
+                toppingQtySpan.textContent = topping.qty;
+                console.log(`Set topping ${topping.id} quantity to:`, topping.qty);
+              }
+            });
+          }
+          
+          // Set Quantity
+          document.getElementById('customQty').value = item.quantity;
+          console.log('Set customQty to:', item.quantity);
+          
+          // Update the custom total
+          updateCustomTotal();
+        }
+      });
+      
+      console.log('Final customItems array:', customItems);
+    }
+  }
+
+  // Update premade total
+  function updatePremadeTotal() {
+    let total = 0;
+    document.querySelectorAll('.pizza-qty-increase').forEach(btn => {
+      const pizzaId = btn.dataset.pizzaId;
+      const pizza = pizzas.find(p => p.id == pizzaId);
+      const qty = parseInt(btn.parentElement.querySelector('.pizza-qty').textContent);
+      total += pizza.price * qty;
+    });
+    document.getElementById('premadeTotal').textContent = `₱${total.toFixed(2)}`;
+  }
+
+  // Update custom pizza total
+  function updateCustomTotal() {
+    let total = 0;
+
+    // Add size price
+    const sizeSelect = document.getElementById('customSize');
+    if (sizeSelect.value) {
+      const sizeOption = sizeSelect.options[sizeSelect.selectedIndex];
+      total += parseFloat(sizeOption.dataset.price) || 0;
+    }
+
+    // Add base price
+    const baseSelect = document.getElementById('customBase');
+    if (baseSelect.value) {
+      const baseOption = baseSelect.options[baseSelect.selectedIndex];
+      total += parseFloat(baseOption.dataset.price) || 0;
+    }
+
+    // Add cheese price
+    const cheeseSelect = document.getElementById('customCheese');
+    if (cheeseSelect.value) {
+      const cheeseOption = cheeseSelect.options[cheeseSelect.selectedIndex];
+      total += parseFloat(cheeseOption.dataset.price) || 0;
+    }
+
+    // Add topping prices
+    document.querySelectorAll('.topping-qty-increase').forEach(btn => {
+      const toppingId = btn.dataset.toppingId;
+      const topping = ingredients.find(ing => ing.id == toppingId);
+      const qty = parseInt(btn.parentElement.querySelector('.topping-qty').textContent);
+      total += topping.price * qty;
+    });
+
+    document.getElementById('customTotal').textContent = `₱${total.toFixed(2)}`;
+  }
+
+  // Add Custom Pizza Button
+  document.getElementById('addCustomPizzaBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+
+    const sizeSelect = document.getElementById('customSize');
+    const baseSelect = document.getElementById('customBase');
+    const cheeseSelect = document.getElementById('customCheese');
+    const qty = parseInt(document.getElementById('customQty').value) || 1;
+
+    if (!sizeSelect.value || !baseSelect.value || !cheeseSelect.value) {
+      alert('Please select size, base, and cheese for your custom pizza');
+      return;
+    }
+
+    let customPrice = 0;
+    const sizeOption = sizeSelect.options[sizeSelect.selectedIndex];
+    const baseOption = baseSelect.options[baseSelect.selectedIndex];
+    const cheeseOption = cheeseSelect.options[cheeseSelect.selectedIndex];
+
+    customPrice += parseFloat(sizeOption.dataset.price) || 0;
+    customPrice += parseFloat(baseOption.dataset.price) || 0;
+    customPrice += parseFloat(cheeseOption.dataset.price) || 0;
+
+    // Collect toppings
+    const toppings = [];
+    document.querySelectorAll('.topping-qty-increase').forEach(btn => {
+      const toppingId = btn.dataset.toppingId;
+      const toppingQty = parseInt(btn.parentElement.querySelector('.topping-qty').textContent);
+      if (toppingQty > 0) {
+        toppings.push({ id: toppingId, qty: toppingQty });
+      }
+    });
+
+    customItems.push({
+      size: sizeSelect.value,
+      base: baseSelect.value,
+      cheese: cheeseSelect.value,
+      toppings: toppings,
+      price: customPrice,
+      qty: qty
+    });
+
+    // Reset form
+    sizeSelect.value = '';
+    baseSelect.value = '';
+    cheeseSelect.value = '';
+    document.getElementById('customQty').value = '1';
+    document.querySelectorAll('.topping-qty').forEach(span => span.textContent = '0');
+    updateCustomTotal();
+
+    alert('Custom pizza added to order!');
+  });
+
+  // Handle form submission
+  document.getElementById('orderForm').addEventListener('submit', function(e) {
+    // Collect premade items
+    const orderItemsContainer = document.getElementById('hiddenItems');
+    orderItemsContainer.innerHTML = ''; // Clear previous items
+    let itemIndex = 0;
+
+    document.querySelectorAll('.pizza-qty-increase').forEach(btn => {
+      const pizzaId = btn.dataset.pizzaId;
+      const qty = parseInt(btn.parentElement.querySelector('.pizza-qty').textContent);
+      
+      if (qty > 0) {
+        const pizza = pizzas.find(p => p.id == pizzaId);
+        const itemData = `
+          <input type="hidden" name="order[orderItems][${itemIndex}][pizza]" value="${pizzaId}">
+          <input type="hidden" name="order[orderItems][${itemIndex}][quantity]" value="${qty}">
+          <input type="hidden" name="order[orderItems][${itemIndex}][isCustom]" value="0">
+        `;
+        const div = document.createElement('div');
+        div.innerHTML = itemData;
+        orderItemsContainer.appendChild(div);
+        itemIndex++;
+      }
+    });
+
+    // Collect custom items
+    customItems.forEach((item, customItemIndex) => {
+      let itemData = `
+        <input type="hidden" name="order[orderItems][${itemIndex}][size]" value="${item.size}">
+        <input type="hidden" name="order[orderItems][${itemIndex}][base]" value="${item.base}">
+        <input type="hidden" name="order[orderItems][${itemIndex}][cheese]" value="${item.cheese}">
+        <input type="hidden" name="order[orderItems][${itemIndex}][quantity]" value="${item.qty}">
+        <input type="hidden" name="order[orderItems][${itemIndex}][price]" value="${item.price}">
+        <input type="hidden" name="order[orderItems][${itemIndex}][isCustom]" value="1">
+      `;
+      
+      // Add toppings for this custom item
+      item.toppings.forEach((topping, toppingIndex) => {
+        itemData += `<input type="hidden" name="order[orderItems][${itemIndex}][toppings][${toppingIndex}][id]" value="${topping.id}">`;
+        itemData += `<input type="hidden" name="order[orderItems][${itemIndex}][toppings][${toppingIndex}][qty]" value="${topping.qty}">`;
+      });
+
+      const div = document.createElement('div');
+      div.innerHTML = itemData;
+      orderItemsContainer.appendChild(div);
+      itemIndex++;
+    });
+  });
+
+  // Initialize
+  loadPremadePizzas();
+  loadCustomPizzaOptions();
+  loadExistingCustomItems();
+  updatePremadeTotal();
+});
+</script>
 {% endblock %}

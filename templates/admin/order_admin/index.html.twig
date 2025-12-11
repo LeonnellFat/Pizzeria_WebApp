@@ -129,7 +129,10 @@
               <td>
                 <div class="space-x-3 flex items-center">
                   <a href="{{ path('app_order_admin_show', {'id': order.id}) }}" 
-                     class="text-blue-600 hover:text-blue-800 font-medium transition">View Details</a>
+                     class="text-blue-600 hover:text-blue-800 font-medium transition">View</a>
+                  
+                  <a href="{{ path('app_order_admin_edit', {'id': order.id}) }}"
+                     class="text-amber-600 hover:text-amber-800 font-medium transition">Edit</a>
                   
                   <form method="POST" action="{{ path('app_order_admin_delete', {'id': order.id}) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this order?');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ order.id) }}">
@@ -160,6 +163,7 @@
         pageLength: 10,
         lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
         dom: '<"datatable-header"<"datatable-controls"lf>>t<"datatable-footer"<"datatable-info"i><"datatable-pagination"p>>',
+        order: [],
         columnDefs: [
           { targets: 8, orderable: false }
         ],

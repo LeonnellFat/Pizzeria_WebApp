@@ -8,6 +8,8 @@ use App\Entity\Category;
 use App\Entity\Ingredient;
 use App\Entity\Order;
 use App\Entity\User;
+use App\Entity\PizzaStock;
+use App\Entity\IngredientStock;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
@@ -28,6 +30,8 @@ final class ActivityLogListener
         Ingredient::class,
         Order::class,
         User::class,
+        PizzaStock::class,
+        IngredientStock::class,
     ];
 
     public function __construct(
