@@ -19,7 +19,13 @@
     <div class="bg-white rounded-3xl shadow-2xl p-8">
       {% if error %}
         <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded">
-          <p class="text-red-700 font-medium">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+          <p class="text-red-700 font-medium">
+            {% if error.messageKey == 'This account has been deactivated.' or 'deactivated' in error.message|lower %}
+              This account has been deactivated.
+            {% else %}
+              {{ error.messageKey|trans(error.messageData, 'security') }}
+            {% endif %}
+          </p>
         </div>
       {% endif %}
 
